@@ -8,13 +8,12 @@ main python code for machine learning DNN models
 import tensorflow as tf
 from keras.layers import Input, Dense, Flatten, TimeDistributed
 from keras.models import Model
-from sklearn.metrics import accuracy_score, f1_score
 from .custom_layers import GCNLayer
 
 
 class ML_Intruder:
 
-    def __init__(self, data_shape, adjacency_shape, node_embedding_length=4, dense_units=25, learning_rate=0.001):
+    def __init__(self, data_shape, adjacency_shape, node_embedding_length=3, dense_units=25, learning_rate=0.001):
         self.data_shape = data_shape
         self.adjacency_shape = adjacency_shape
         self.node_embedding_length = node_embedding_length
@@ -63,21 +62,6 @@ class ML_Intruder:
         self.binary_prediction = (self.prediction > threshold).astype(int)
         return self.binary_prediction
     
-    def evaluate_performance(self, true_labels):
-        if self.binary_prediction is None:
-            raise ValueError("Must call binary_predict() before calling evaluate_performance().")
-        
-        # Flatten the binary predictions and true labels
-        flattened_prediction = self.binary_prediction.ravel()
-        flattened_true_labels = true_labels.ravel()
-        
-        # Calculate accuracy and F1 score
-        accuracy = accuracy_score(flattened_true_labels, flattened_prediction)
-        f1 = f1_score(flattened_true_labels, flattened_prediction)
-        
-        # Print the scores
-        print('Accuracy:', accuracy)
-        print('F1 Score:', f1)
 
 
 
