@@ -39,12 +39,15 @@ class ML_Intruder:
         dense_output = Dense(self.dense_units, activation='sigmoid')(time_output)
 
         # Create the Model
-        model = Model(inputs=[node_input, adjacency_input], outputs=dense_output)
+        model = Model(inputs=node_input, outputs=dense_output)
         return model
     
     def compile(self):
         optimizer = tf.keras.optimizers.Adam(learning_rate=self.learning_rate)
         self.model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+
+    def train_on_batch(self, data_batch, target_batch):
+        self.model.train_on_batch(data_batch, target_batch)
     
     def fit(self, training_data, adjacency_matrix_train, trainY, epochs, batch_size, verbose):
         self.model.fit([training_data, adjacency_matrix_train], trainY, epochs=epochs, batch_size=batch_size, verbose=verbose)
@@ -52,8 +55,8 @@ class ML_Intruder:
     def summary(self):
         self.model.summary()
 
-    def predict(self, data, adjacency_matrix):
-        self.prediction = self.model.predict([data, adjacency_matrix])
+    def predict(self, data):
+        self.prediction = self.model.predict(data)
         return self.prediction
 
     def binary_predict(self, threshold=0.5):
