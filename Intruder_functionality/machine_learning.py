@@ -29,10 +29,10 @@ class ML_Intruder:
         adjacency_input = Input(shape=self.adjacency_shape, name='adjacency_input')
 
         # Define the model using the functional API
-        gcn_output = GCNLayer(node_embedding_length=self.node_embedding_length)([node_input, adjacency_input])
+        # gcn_output = GCNLayer(node_embedding_length=self.node_embedding_length)([node_input, adjacency_input])
 
         # TimeDistributed layer with Dense
-        time_output = TimeDistributed(Dense(units=self.node_embedding_length, activation='relu'))(gcn_output)
+        time_output = TimeDistributed(Dense(units=self.node_embedding_length, activation='relu'))(node_input)
         time_output = Flatten()(time_output)
 
         # Dense layer for the final output
