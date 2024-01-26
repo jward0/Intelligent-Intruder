@@ -13,9 +13,9 @@ from .custom_layers import GCNLayer
 
 class ML_Intruder:
 
-    def __init__(self, data_shape, adjacency_shape, node_embedding_length=3, dense_units=25, learning_rate=0.001):
+    def __init__(self, data_shape, node_embedding_length=4, dense_units=25, learning_rate=0.001):
         self.data_shape = data_shape
-        self.adjacency_shape = adjacency_shape
+        # self.adjacency_shape = adjacency_shape
         self.node_embedding_length = node_embedding_length
         self.dense_units = dense_units
         self.learning_rate = learning_rate
@@ -26,7 +26,7 @@ class ML_Intruder:
     def build_model(self):
         # Define the input shapes
         node_input = Input(shape=self.data_shape, name='node_input')
-        adjacency_input = Input(shape=self.adjacency_shape, name='adjacency_input')
+        # adjacency_input = Input(shape=self.adjacency_shape, name='adjacency_input')
 
         # Define the model using the functional API
         # gcn_output = GCNLayer(node_embedding_length=self.node_embedding_length)([node_input, adjacency_input])
@@ -49,8 +49,8 @@ class ML_Intruder:
     def train_on_batch(self, data_batch, target_batch):
         self.model.train_on_batch(data_batch, target_batch)
     
-    def fit(self, training_data, adjacency_matrix_train, trainY, epochs, batch_size, verbose):
-        self.model.fit([training_data, adjacency_matrix_train], trainY, epochs=epochs, batch_size=batch_size, verbose=verbose)
+    def fit(self, training_data, trainY, epochs, batch_size, verbose):
+        self.model.fit(training_data, trainY, epochs=epochs, batch_size=batch_size, verbose=verbose)
     
     def summary(self):
         self.model.summary()
