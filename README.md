@@ -2,6 +2,22 @@
 MEng Project - Reinforcement Learning for an Intelligent Intruder
 
 
+## Sudo Code for Algorithm
+
+
+### functions:
+- f1(batch size, window of timesteps, node, features) = confidence level
+	- model prediction function that returns sigmoid confidence output for potential attack on each node at current timestep
+	- model trains on batch size 32 of randomly sampled windows in replay buffer that is updated with the correct vulnerabilities as time passes
+- f2(time, predictions, threshold) = probability of confidence level being above the threshold in remaining attack time
+	- probaility calculated as: $insert final probability equation$
+	- uses a 2nd replay buffer, same structure as the first but with only the prediction values from f1 for associated timesteps
+- f3(f1, f2, threshold) = final attack
+	- uses numerically calculated threshold and the product of f1 and f2 to determine when adversary attacks in the remaining timeframe
+
+### structure:
+
+
 ## Data_summary:
 
 $timestamp_idleness.csv
