@@ -17,8 +17,8 @@ def main(file_paths, attack_window = 50, ending_timestep = 2000):
 
     df_vel = pd.read_csv(file_path, sep=';', header=None)
     df_idle = pd.read_csv(file_path2, sep=';',header=None)
-    df_vuln = pd.read_csv(file_path3, sep=';',header=None)
-    df_dist = pd.read_csv(file_path4, sep=';',header=None)
+    df_dist = pd.read_csv(file_path3, sep=';',header=None)
+    df_vuln = pd.read_csv(file_path4, sep=';',header=None)
 
     N = len(df_vel.T)-1 # number of nodes in the enviroment
 
