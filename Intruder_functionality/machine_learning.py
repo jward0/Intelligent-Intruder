@@ -9,6 +9,7 @@ import tensorflow as tf
 from keras.layers import Input, Dense, Flatten, TimeDistributed
 from keras.models import Model
 from .custom_layers import GCNLayer
+import numpy as np
 
 
 class ML_Intruder:
@@ -65,6 +66,71 @@ class ML_Intruder:
         self.binary_prediction = (self.prediction > threshold).astype(int)
         return self.binary_prediction
     
+    def evaluate_and_predict(self, trainX, trainY, window_size, f1_threshold, f2_threshold, f3_threshold, ending_timestep):
 
+        predictions = np.full((ending_timestep, trainX.shape[-2]), np.nan)
+        # probabilities = np.full((ending_timestep, 1), np.nan)
+
+        for i in range(window_size, ending_timestep):
+
+            # Get the most recent window of data
+            window_data = trainX[i-window_size:i,:,:]
+            window_data = window_data[np.newaxis, ...]  # Add batch dimension
+
+            # # Get the corresponding label
+            label = trainY[i,:]
+            label = label[np.newaxis, ...]  # Add batch dimension
+
+            # Set replay buffer as all sequential data so far
+            replay_buffer = trainX[0:i,:,:]
+            replay_buffer_label = trainY[0:i,:]
+
+            # Sample a batch from the replay buffer
+            batch_size = min(len(replay_buffer), 32)  # Example batch size=32
+
+            # generate random batch indices
+            starting_index = np.random.randint(0, len(replay_buffer) - (window_size-1),size=batch_size)
+
+            # Generate the indices for the adjacent window
+            indices = [np.arange(idx, idx + window_size) for idx in starting_index]
+
+            # Extract the batch samples and labels using the sampled indices
+            replay_batch = replay_buffer[indices]
+            replay_batch_labels = replay_buffer_label[[i+(window_size-1) for i in starting_index]]
+
+            # Convert the batch to arrays
+            replay_batch_array = np.array(replay_batch)
+            replay_batch_labels_array = np.array(replay_batch_labels)
+
+            # Train on the replay batch
+            self.train_on_batch(replay_batch_array, replay_batch_labels_array)
+
+            # Predict attack
+            prediction = self.predict(window_data)
+
+            # Replay buffer for model predictions
+            predictions[[i+(window_size-1) for i in starting_index]] = prediction
+            replay_buffer_predictions = predictions[0:i,:]
+
+            # probability of threshold not occuring in remaining time frame
+            probability_exceed_threshold = (1 - np.sum(replay_buffer_predictions.flatten() >= f2_threshold) / np.sum(replay_buffer_predictions.flatten() != np.nan))*np.square(i/ending_timestep)
+            
+            # prob = (1 - np.sum(replay_buffer_predictions.flatten() >= f2_threshold) / np.sum(replay_buffer_predictions.flatten() != np.nan))
+            # probabilities[i] = probability_exceed_threshold
+
+            f3 = probability_exceed_threshold*prediction.max()
+
+            # Check the prediction against the threshold
+            if (f3 >= f3_threshold)&(prediction.max()>=f1_threshold):
+                max_index = prediction.argmax()
+                print(f"Threshold reached with prediction: {prediction.max()} at timestep: {i}")
+                print(f"Attack succesful = {label[:,max_index]==1} | at timestep: {i}")
+                time_of_attack = i
+                node_attacked = max_index + 1
+                attack_outcome = label[:,max_index]
+
+                break
+        
+        return time_of_attack, node_attacked, attack_outcome 
 
 
