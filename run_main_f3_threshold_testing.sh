@@ -19,8 +19,8 @@ while IFS= read -r line; do
     file_paths=($line)
     
     # Extract a common prefix from the directory path of the first file path
-    dir_path=$(dirname "${file_paths[0]}")
-    common_prefix=$(basename "$dir_path")
+    common_prefix=$(echo "$line" | cut -d'/' -f1-4 | tr '/' '_')
+    common_prefix="shell_script_results/${common_prefix}"
 
     # Call the Python script with the input files
     python "$python_script_path" "${file_paths[@]}"

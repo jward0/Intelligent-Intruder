@@ -53,10 +53,10 @@ def main(file_paths, attack_window = 50, ending_timestep = 2000):
     window_size = 10
     f1_threshold = 1  # confidence in f1
     f2_threshold = 1    # same as f1 threshold for now
-    f3_thresholds = np.arange(0,1,0.05)     # numerically tested constant
+    f3_thresholds = np.arange(0,0.9,0.05)     # numerically tested constant
 
     data_shape = (window_size,trainX.shape[1], trainX.shape[-1])
-    model = ml.ML_Intruder(data_shape)
+    model = ml.ML_Intruder(data_shape, N)
 
     # Compile the model
     model.compile()
@@ -74,15 +74,15 @@ def main(file_paths, attack_window = 50, ending_timestep = 2000):
 
     # Output results to a text file
     with open('results.txt', 'w') as f:
-        f.write('Times of Attack: {}\n'.format(times_of_attack))
-        f.write('Nodes Attacked: {}\n'.format(nodes_attacked))
-        f.write('Attack Outcomes: {}\n'.format(attack_outcomes))
-
+        f.write('{}\n'.format(';'.join(map(str, times_of_attack))))
+        f.write('{}\n'.format(';'.join(map(str, nodes_attacked))))
+        f.write('{}\n'.format(';'.join(map(str, attack_outcomes))))
+        
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run Intruder Detection Model')
     parser.add_argument('file_paths', metavar='FILE', type=str, nargs=4,
-                        help='file paths for velocity_metrics, idleness, vulnerabilities, and distance_metrics CSV files')
+                        help='file paths for velocity_metrics, idleness_metrics, distance_metrics, and vulnerability_metrics CSV files')
     args = parser.parse_args()
     main(args.file_paths)
 

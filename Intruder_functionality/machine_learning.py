@@ -14,7 +14,7 @@ import numpy as np
 
 class ML_Intruder:
 
-    def __init__(self, data_shape, node_embedding_length=4, dense_units=25, learning_rate=0.001):
+    def __init__(self, data_shape, dense_units, node_embedding_length=4, learning_rate=0.001):
         self.data_shape = data_shape
         # self.adjacency_shape = adjacency_shape
         self.node_embedding_length = node_embedding_length
@@ -70,6 +70,10 @@ class ML_Intruder:
 
         predictions = np.full((ending_timestep, trainX.shape[-2]), np.nan)
         # probabilities = np.full((ending_timestep, 1), np.nan)
+
+        time_of_attack = np.nan
+        node_attacked = np.nan
+        attack_outcome = np.nan
 
         for i in range(window_size, ending_timestep):
 
@@ -131,6 +135,6 @@ class ML_Intruder:
 
                 break
         
-        return time_of_attack, node_attacked, attack_outcome 
+        return time_of_attack, node_attacked, attack_outcome
 
 
