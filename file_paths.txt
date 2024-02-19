@@ -4,22 +4,8 @@ dtag/grid/4_agents/1/velocity_metrics.csv dtag/grid/4_agents/1/idleness.csv dtag
 dtag/grid/4_agents/2/velocity_metrics.csv dtag/grid/4_agents/2/idleness.csv dtag/grid/4_agents/2/distance_metrics.csv dtag/grid/4_agents/2/vulnerabilities.csv 
 dtag/grid/6_agents/1/velocity_metrics.csv dtag/grid/6_agents/1/idleness.csv dtag/grid/6_agents/1/distance_metrics.csv dtag/grid/6_agents/1/vulnerabilities.csv
 dtag/grid/6_agents/2/velocity_metrics.csv dtag/grid/6_agents/2/idleness.csv dtag/grid/6_agents/2/distance_metrics.csv dtag/grid/6_agents/2/vulnerabilities.csv
- 
-dtag/example/2_agents/1/velocity_metrics.csv dtag/example/2_agents/1/idleness.csv dtag/example/2_agents/1/distance_metrics.csv dtag/example/2_agents/1/vulnerabilities.csv
-dtag/example/2_agents/2/velocity_metrics.csv dtag/example/2_agents/2/idleness.csv dtag/example/2_agents/2/distance_metrics.csv dtag/example/2_agents/2/vulnerabilities.csv
-dtag/example/4_agents/1/velocity_metrics.csv dtag/example/4_agents/1/idleness.csv dtag/example/4_agents/1/distance_metrics.csv dtag/example/4_agents/1/vulnerabilities.csv
-dtag/example/4_agents/2/velocity_metrics.csv dtag/example/4_agents/2/idleness.csv dtag/example/4_agents/2/distance_metrics.csv dtag/example/4_agents/2/vulnerabilities.csv
-dtag/example/6_agents/1/velocity_metrics.csv dtag/example/6_agents/1/idleness.csv dtag/example/6_agents/1/distance_metrics.csv dtag/example/6_agents/1/vulnerabilities.csv
-dtag/example/6_agents/2/velocity_metrics.csv dtag/example/6_agents/2/idleness.csv dtag/example/6_agents/2/distance_metrics.csv dtag/example/6_agents/2/vulnerabilities.csv
-
-dtag/cumberland/2_agents/1/velocity_metrics.csv dtag/cumberland/2_agents/1/idleness.csv dtag/cumberland/2_agents/1/distance_metrics.csv dtag/cumberland/2_agents/1/vulnerabilities.csv
-dtag/cumberland/2_agents/2/velocity_metrics.csv dtag/cumberland/2_agents/2/idleness.csv dtag/cumberland/2_agents/2/distance_metrics.csv dtag/cumberland/2_agents/2/vulnerabilities.csv
-dtag/cumberland/4_agents/1/velocity_metrics.csv dtag/cumberland/4_agents/1/idleness.csv dtag/cumberland/4_agents/1/distance_metrics.csv dtag/cumberland/4_agents/1/vulnerabilities.csv
-dtag/cumberland/4_agents/2/velocity_metrics.csv dtag/cumberland/4_agents/2/idleness.csv dtag/cumberland/4_agents/2/distance_metrics.csv dtag/cumberland/4_agents/2/vulnerabilities.csv
-dtag/cumberland/6_agents/1/velocity_metrics.csv dtag/cumberland/6_agents/1/idleness.csv dtag/cumberland/6_agents/1/distance_metrics.csv dtag/cumberland/6_agents/1/vulnerabilities.csv
-dtag/cumberland/6_agents/2/velocity_metrics.csv dtag/cumberland/6_agents/2/idleness.csv dtag/cumberland/6_agents/2/distance_metrics.csv dtag/cumberland/6_agents/2/vulnerabilities.csv
-
-
+dtag/grid/8_agents/1/velocity_metrics.csv dtag/grid/8_agents/1/idleness.csv dtag/grid/8_agents/1/distance_metrics.csv dtag/grid/8_agents/1/vulnerabilities.csv
+dtag/grid/8_agents/2/velocity_metrics.csv dtag/grid/8_agents/2/idleness.csv dtag/grid/8_agents/2/distance_metrics.csv dtag/grid/8_agents/2/vulnerabilities.csv
 
 dtap/grid/2_agents/1/velocity_metrics.csv dtap/grid/2_agents/1/idleness.csv dtap/grid/2_agents/1/distance_metrics.csv dtap/grid/2_agents/1/vulnerabilities.csv
 dtap/grid/2_agents/2/velocity_metrics.csv dtap/grid/2_agents/2/idleness.csv dtap/grid/2_agents/2/distance_metrics.csv dtap/grid/2_agents/2/vulnerabilities.csv
@@ -27,8 +13,8 @@ dtap/grid/4_agents/1/velocity_metrics.csv dtap/grid/4_agents/1/idleness.csv dtap
 dtap/grid/4_agents/2/velocity_metrics.csv dtap/grid/4_agents/2/idleness.csv dtap/grid/4_agents/2/distance_metrics.csv dtap/grid/4_agents/2/vulnerabilities.csv 
 dtap/grid/6_agents/1/velocity_metrics.csv dtap/grid/6_agents/1/idleness.csv dtap/grid/6_agents/1/distance_metrics.csv dtap/grid/6_agents/1/vulnerabilities.csv
 dtap/grid/6_agents/2/velocity_metrics.csv dtap/grid/6_agents/2/idleness.csv dtap/grid/6_agents/2/distance_metrics.csv dtap/grid/6_agents/2/vulnerabilities.csv
-
-
+dtap/grid/8_agents/1/velocity_metrics.csv dtap/grid/8_agents/1/idleness.csv dtap/grid/8_agents/1/distance_metrics.csv dtap/grid/8_agents/1/vulnerabilities.csv
+dtap/grid/8_agents/2/velocity_metrics.csv dtap/grid/8_agents/2/idleness.csv dtap/grid/8_agents/2/distance_metrics.csv dtap/grid/8_agents/2/vulnerabilities.csv
 
 cbls/grid/2_agents/1/velocity_metrics.csv cbls/grid/2_agents/1/idleness.csv cbls/grid/2_agents/1/distance_metrics.csv cbls/grid/2_agents/1/vulnerabilities.csv
 cbls/grid/2_agents/2/velocity_metrics.csv cbls/grid/2_agents/2/idleness.csv cbls/grid/2_agents/2/distance_metrics.csv cbls/grid/2_agents/2/vulnerabilities.csv
@@ -36,6 +22,21 @@ cbls/grid/4_agents/1/velocity_metrics.csv cbls/grid/4_agents/1/idleness.csv cbls
 cbls/grid/4_agents/2/velocity_metrics.csv cbls/grid/4_agents/2/idleness.csv cbls/grid/4_agents/2/distance_metrics.csv cbls/grid/4_agents/2/vulnerabilities.csv
 cbls/grid/6_agents/1/velocity_metrics.csv cbls/grid/6_agents/1/idleness.csv cbls/grid/6_agents/1/distance_metrics.csv cbls/grid/6_agents/1/vulnerabilities.csv
 cbls/grid/6_agents/2/velocity_metrics.csv cbls/grid/6_agents/2/idleness.csv cbls/grid/6_agents/2/distance_metrics.csv cbls/grid/6_agents/2/vulnerabilities.csv
+cbls/grid/8_agents/1/velocity_metrics.csv cbls/grid/8_agents/1/idleness.csv cbls/grid/8_agents/1/distance_metrics.csv cbls/grid/8_agents/1/vulnerabilities.csv
+cbls/grid/8_agents/2/velocity_metrics.csv cbls/grid/8_agents/2/idleness.csv cbls/grid/8_agents/2/distance_metrics.csv cbls/grid/8_agents/2/vulnerabilities.csv
+
+dtag/example/4_agents/1/velocity_metrics.csv dtag/example/4_agents/1/idleness.csv dtag/example/4_agents/1/distance_metrics.csv dtag/example/4_agents/1/vulnerabilities.csv
+dtag/example/4_agents/2/velocity_metrics.csv dtag/example/4_agents/2/idleness.csv dtag/example/4_agents/2/distance_metrics.csv dtag/example/4_agents/2/vulnerabilities.csv
+dtag/example/8_agents/4/velocity_metrics.csv dtag/example/8_agents/4/idleness.csv dtag/example/8_agents/4/distance_metrics.csv dtag/example/8_agents/4/vulnerabilities.csv
+
+dtag/cumberland/2_agents/1/velocity_metrics.csv dtag/cumberland/2_agents/1/idleness.csv dtag/cumberland/2_agents/1/distance_metrics.csv dtag/cumberland/2_agents/1/vulnerabilities.csv
+dtag/cumberland/2_agents/2/velocity_metrics.csv dtag/cumberland/2_agents/2/idleness.csv dtag/cumberland/2_agents/2/distance_metrics.csv dtag/cumberland/2_agents/2/vulnerabilities.csv
+dtag/cumberland/4_agents/1/velocity_metrics.csv dtag/cumberland/4_agents/1/idleness.csv dtag/cumberland/4_agents/1/distance_metrics.csv dtag/cumberland/4_agents/1/vulnerabilities.csv
+dtag/cumberland/4_agents/2/velocity_metrics.csv dtag/cumberland/4_agents/2/idleness.csv dtag/cumberland/4_agents/2/distance_metrics.csv dtag/cumberland/4_agents/2/vulnerabilities.csv
+dtag/cumberland/6_agents/1/velocity_metrics.csv dtag/cumberland/6_agents/1/idleness.csv dtag/cumberland/6_agents/1/distance_metrics.csv dtag/cumberland/6_agents/1/vulnerabilities.csv
+dtag/cumberland/6_agents/2/velocity_metrics.csv dtag/cumberland/6_agents/2/idleness.csv dtag/cumberland/6_agents/2/distance_metrics.csv dtag/cumberland/6_agents/2/vulnerabilities.csv
+dtag/cumberland/8_agents/1/velocity_metrics.csv dtag/cumberland/8_agents/1/idleness.csv dtag/cumberland/8_agents/1/distance_metrics.csv dtag/cumberland/8_agents/1/vulnerabilities.csv
+dtag/cumberland/8_agents/2/velocity_metrics.csv dtag/cumberland/8_agents/2/idleness.csv dtag/cumberland/8_agents/2/distance_metrics.csv dtag/cumberland/8_agents/2/vulnerabilities.csv
 
 cbls/example/2_agents/1/velocity_metrics.csv cbls/example/2_agents/1/idleness.csv cbls/example/2_agents/1/distance_metrics.csv cbls/example/2_agents/1/vulnerabilities.csv
 cbls/example/2_agents/2/velocity_metrics.csv cbls/example/2_agents/2/idleness.csv cbls/example/2_agents/2/distance_metrics.csv cbls/example/2_agents/2/vulnerabilities.csv
@@ -43,6 +44,8 @@ cbls/example/4_agents/1/velocity_metrics.csv cbls/example/4_agents/1/idleness.cs
 cbls/example/4_agents/2/velocity_metrics.csv cbls/example/4_agents/2/idleness.csv cbls/example/4_agents/2/distance_metrics.csv cbls/example/4_agents/2/vulnerabilities.csv
 cbls/example/6_agents/1/velocity_metrics.csv cbls/example/6_agents/1/idleness.csv cbls/example/6_agents/1/distance_metrics.csv cbls/example/6_agents/1/vulnerabilities.csv
 cbls/example/6_agents/2/velocity_metrics.csv cbls/example/6_agents/2/idleness.csv cbls/example/6_agents/2/distance_metrics.csv cbls/example/6_agents/2/vulnerabilities.csv
+cbls/example/8_agents/1/velocity_metrics.csv cbls/example/8_agents/1/idleness.csv cbls/example/8_agents/1/distance_metrics.csv cbls/example/8_agents/1/vulnerabilities.csv
+cbls/example/8_agents/2/velocity_metrics.csv cbls/example/8_agents/2/idleness.csv cbls/example/8_agents/2/distance_metrics.csv cbls/example/8_agents/2/vulnerabilities.csv
 
 cbls/cumberland/2_agents/1/velocity_metrics.csv cbls/cumberland/2_agents/1/idleness.csv cbls/cumberland/2_agents/1/distance_metrics.csv cbls/cumberland/2_agents/1/vulnerabilities.csv
 cbls/cumberland/2_agents/2/velocity_metrics.csv cbls/cumberland/2_agents/2/idleness.csv cbls/cumberland/2_agents/2/distance_metrics.csv cbls/cumberland/2_agents/2/vulnerabilities.csv
@@ -50,3 +53,6 @@ cbls/cumberland/4_agents/1/velocity_metrics.csv cbls/cumberland/4_agents/1/idlen
 cbls/cumberland/4_agents/2/velocity_metrics.csv cbls/cumberland/4_agents/2/idleness.csv cbls/cumberland/4_agents/2/distance_metrics.csv cbls/cumberland/4_agents/2/vulnerabilities.csv
 cbls/cumberland/6_agents/1/velocity_metrics.csv cbls/cumberland/6_agents/1/idleness.csv cbls/cumberland/6_agents/1/distance_metrics.csv cbls/cumberland/6_agents/1/vulnerabilities.csv
 cbls/cumberland/6_agents/2/velocity_metrics.csv cbls/cumberland/6_agents/2/idleness.csv cbls/cumberland/6_agents/2/distance_metrics.csv cbls/cumberland/6_agents/2/vulnerabilities.csv
+cbls/cumberland/8_agents/1/velocity_metrics.csv cbls/cumberland/8_agents/1/idleness.csv cbls/cumberland/8_agents/1/distance_metrics.csv cbls/cumberland/8_agents/1/vulnerabilities.csv
+cbls/cumberland/8_agents/2/velocity_metrics.csv cbls/cumberland/8_agents/2/idleness.csv cbls/cumberland/8_agents/2/distance_metrics.csv cbls/cumberland/8_agents/2/vulnerabilities.csv
+
