@@ -8,7 +8,6 @@ main python code for machine learning DNN models
 import tensorflow as tf
 from keras.layers import Input, Dense, Flatten, TimeDistributed
 from keras.models import Model
-from .custom_layers import GCNLayer
 import numpy as np
 
 

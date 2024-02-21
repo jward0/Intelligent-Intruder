@@ -168,4 +168,15 @@ cbls_zip.tar.gz
 dtag_zip.tar.gz
 dtap_zip.tar.gz
 
+.tar.gz
+
 .outdated_code/
+newzip_files/
+
+00_dtag_scripts/
+00_dtap_scripts/
+00_cbls_scripts/
+00_cbls_m_scripts/
+00_sebs_scripts/
+
+

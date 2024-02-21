@@ -6,7 +6,7 @@ Python script to be used in shell scripts
 
 # Python script: main.py
 import argparse
-from Intruder_functionality import machine_learning as ml
+import machine_learning as ml
 import pandas as pd
 import numpy as np
 
@@ -57,7 +57,7 @@ def main(file_paths, attack_window = 50, ending_timestep = 2000):
 
     data_shape = (window_size,trainX.shape[1], trainX.shape[-1])
     model = ml.ML_Intruder(data_shape, N)
-
+    
     # Compile the model
     model.compile()
 
@@ -66,7 +66,7 @@ def main(file_paths, attack_window = 50, ending_timestep = 2000):
     attack_outcomes = np.array([])
 
     for i in range(10):
-    #
+    
         time_of_attack, node_attacked, attack_outcome = model.evaluate_and_predict(trainX, trainY, window_size, f1_threshold, f2_threshold, f3_threshold, ending_timestep)
         times_of_attack = np.append(times_of_attack, time_of_attack)
         nodes_attacked = np.append(nodes_attacked, node_attacked)

@@ -50,3 +50,35 @@ velocity_metrics.csv
 vulnerabilities.csv
 	Derived data. Logs vulnerability (time until next visit) of every node over time. First column is timestamps, subsequent columns are nodes 0-n. Inf values are present after node has been visited for the last time. Cropping of dataset necessary to remove infinite values.
 
+
+P061: Reinforcement learning for an intelligent intruder
+Primary supervisor: Edmund Hunt
+Co-supervisor(s): James Ward (University of Bristol)
+Suitable for: MEng;MSc;
+Capacity: 1
+Project description (including the motivating real-world problem and stakeholders):
+The field of multi-robot patrolling is concerned with effectively monitoring an environment for
+security or observation purposes, potentially in the presence of adversaries that seek to gain
+undetected access to the environment. This is of interest to governmental or private organisations
+concerned with infrastructure security, and conservation or research work involving environmental
+monitoring. To assess the patrol strategies used in such a situation, models of potential attackers are
+necessary, and the more intelligent and realistic the attacker model, the more useful our analysis.
+We seek to create a reinforcement learning-based adversary that operates under realistic
+constraints to effectively attack patrol systems using unknown strategies.
+The student will: (1) design and test an ML architecture utilising on-line, one-shot reinforcement
+learning to maximise its probability of successful attack against simulated patrol systems, and, as a
+possible extension, (2) investigate the ability of patrol strategies to effectively disrupt the learning of
+such an adversary.
+45
+The startpoint for the student would be our existing, non ML-based intelligent adversary model. This
+would be integrated with a new ML model and RL environment created in Python with
+Keras/Tensorflow, using existing patrol data from extensive simulation work. The output of this work
+would be a comparison of the performance of the ML-based adversary with our existing adversary
+models.
+References:
+James C. Ward and Edmund R. Hunt, An Empirical Method for Benchmarking Multi-Robot Patrol
+Strategies in Adversarial Environments, Proceedings of ACM SAC Conference (SAC’23) 2023
+N. Basilico, Recent Trends in Robotic Patrolling, Current Robotics Reports 3, 2 (June 2022), 65–76
+Bruce et al., One-Shot Reinforcement Learning for Robot Navigation with Interactive Replay, 31st
+Conference of Neural Information Processing Systems (NIPS 2017), 2017
+Keywords: reinforcement learning, machine learning, simulation, robotics, patrolling, security
