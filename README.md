@@ -50,7 +50,7 @@ velocity_metrics.csv
 vulnerabilities.csv
 	Derived data. Logs vulnerability (time until next visit) of every node over time. First column is timestamps, subsequent columns are nodes 0-n. Inf values are present after node has been visited for the last time. Cropping of dataset necessary to remove infinite values.
 
-### Project proposition:
+### Project proposal:
 
 P061: Deep learning for an intelligent intruder
 Primary supervisor: Edmund Hunt
