@@ -50,8 +50,9 @@ velocity_metrics.csv
 vulnerabilities.csv
 	Derived data. Logs vulnerability (time until next visit) of every node over time. First column is timestamps, subsequent columns are nodes 0-n. Inf values are present after node has been visited for the last time. Cropping of dataset necessary to remove infinite values.
 
+### Project proposition:
 
-P061: Reinforcement learning for an intelligent intruder
+P061: Deep learning for an intelligent intruder
 Primary supervisor: Edmund Hunt
 Co-supervisor(s): James Ward (University of Bristol)
 Suitable for: MEng;MSc;
@@ -63,7 +64,7 @@ undetected access to the environment. This is of interest to governmental or pri
 concerned with infrastructure security, and conservation or research work involving environmental
 monitoring. To assess the patrol strategies used in such a situation, models of potential attackers are
 necessary, and the more intelligent and realistic the attacker model, the more useful our analysis.
-We seek to create a reinforcement learning-based adversary that operates under realistic
+We seek to create a deep learning-based adversary that operates under realistic
 constraints to effectively attack patrol systems using unknown strategies.
 The student will: (1) design and test an ML architecture utilising on-line, one-shot reinforcement
 learning to maximise its probability of successful attack against simulated patrol systems, and, as a
