@@ -1,0 +1,3 @@
+10.0;1089.0;1404.0;1576.0;1683.0;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan
+1.0;1.0;1.0;1.0;1.0;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan
+1.0;1.0;1.0;1.0;1.0;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan

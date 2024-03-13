@@ -125,6 +125,11 @@ class ML_Intruder:
 
             f3 = probability_exceed_threshold*prediction.max()
 
+            print(i)
+            print(prediction.max())
+            print(np.sum(replay_buffer_predictions.flatten() >= f2_threshold) / np.sum(replay_buffer_predictions.flatten() != np.nan))
+            print(f3)
+
             # Check the prediction against the threshold
             if (f3 >= f3_threshold)&(prediction.max()>=f1_threshold):
                 max_index = prediction.argmax()

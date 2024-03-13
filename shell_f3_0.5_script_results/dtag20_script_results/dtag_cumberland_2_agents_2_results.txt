@@ -1,0 +1,3 @@
+1953.0;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan
+10.0;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan
+1.0;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan;nan
