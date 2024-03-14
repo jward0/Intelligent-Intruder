@@ -20,19 +20,18 @@ while IFS= read -r line; do
     
     # Extract a common prefix from the directory path of the first file path
     common_prefix=$(echo "$line" | cut -d'/' -f1-4 | tr '/' '_')
-    # common_prefix="cloud_script_results/${common_prefix}"
+    common_prefix="cloud_script_results/${common_prefix}"
 
     # Call the Python script with the input files
     python "$python_script_path" "${file_paths[@]}"
 
-    # Loop through the attack window values and move the results file to the corresponding folder
-    for attack_window in 25 50 75; do
-        output_file="AW${attack_window}_results.txt"
-        if [ -f "$output_file" ]; then
-            output_dir="cloud_script_results/attack_window_${attack_window}"
-            mkdir -p "$output_dir"
-            mv "$output_file" "${output_dir}/${common_prefix}_${output_file}"
-            echo "Results saved to ${output_dir}/${common_prefix}_${output_file}"
-        fi
-    done
+    # Check if the results.txt file was created and rename it to include the common prefix
+    if [ -f results.txt ]; then
+        output_dir="cloud_script_results/"
+        mkdir -p "$output_dir"
+        mv results.txt "${common_prefix}_results.txt"
+        echo "Results saved to ${common_prefix}_results.txt"
+    else
+        echo "Error: The results file was not created for set: $line"
+    fi
 done < "$file_list"

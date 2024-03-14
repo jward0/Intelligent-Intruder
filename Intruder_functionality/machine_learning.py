@@ -72,9 +72,9 @@ class ML_Intruder:
         # probabilities = np.full((ending_timestep, 1), np.nan)
         print(predictions.shape)
 
-        time_of_attack = np.nan
-        node_attacked = np.nan
-        attack_outcome = np.nan
+        time_of_attack = ending_timestep
+        node_attacked = -1
+        attack_outcome = -1
 
         for i in range(window_size, ending_timestep):
 
@@ -125,10 +125,10 @@ class ML_Intruder:
 
             f3 = probability_exceed_threshold*prediction.max()
 
-            print(i)
-            print(prediction.max())
-            print(np.sum(replay_buffer_predictions.flatten() >= f2_threshold) / np.sum(replay_buffer_predictions.flatten() != np.nan))
-            print(f3)
+            # print(i)
+            # print(prediction.max())
+            # print(np.sum(replay_buffer_predictions.flatten() >= f2_threshold) / np.sum(replay_buffer_predictions.flatten() != np.nan))
+            # print(f3)
 
             # Check the prediction against the threshold
             if (f3 >= f3_threshold)&(prediction.max()>=f1_threshold):
