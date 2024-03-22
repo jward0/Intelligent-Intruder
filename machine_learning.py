@@ -64,7 +64,7 @@ class ML_Intruder:
     def evaluate_and_predict(self, trainX, trainY, window_size, f1_threshold, f2_threshold, f3_threshold, ending_timestep, vuln_data):
 
         predictions = np.full((ending_timestep, trainX.shape[-2]), np.nan)
-        replay_buffer_label = np.full((ending_timestep, trainX.shape[-2]), np.nan)
+        replay_buffer_label = np.full((ending_timestep, trainX.shape[-2]), 0.5)
         # probabilities = np.full((ending_timestep, 1), np.nan)
         print(predictions.shape)
 
@@ -84,18 +84,11 @@ class ML_Intruder:
 
             # Set replay buffer as all sequential data so far
             replay_buffer = trainX[0:i,:,:]
-            print(replay_buffer_label)
-            # print(vuln_data[i,:])
-            # update labels appropiatly
-            for j, vuln in enumerate(vuln_data[i,:]):
-                print(vuln)
-                print(j)
-                # print(j)
-                if vuln <= 1:
-                    print("HOORAY")
-                    replay_buffer_label[0:i,j] = trainY[0:i,j]
-                else:
-                    print("wait")
+
+            #update replay buffer labels appropriatly
+            vuln_threshold = vuln_data[i,:] <= 1
+            replay_buffer_label[0:i, vuln_threshold] = trainY[0:i, vuln_threshold]
+
 
             # Sample a batch from the replay buffer
             batch_size = min(len(replay_buffer), 32)  # Example batch size=32
@@ -131,6 +124,10 @@ class ML_Intruder:
             # probabilities[i] = probability_exceed_threshold
 
             f3 = probability_exceed_threshold*prediction.max()
+            # print(prediction.max())
+            # print(f3)
+            # max_index = prediction.argmax()
+            # print(label[:,max_index])
 
 
             # Check the prediction against the threshold

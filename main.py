@@ -73,10 +73,10 @@ def main(file_paths, attack_window = 50, ending_timestep = 1800):
     for i in range(10):
         # Drop the first 1000 timesteps from trainX and trainY
         if i > 0:
-            trainX = trainX[1000:, :, :]
-            trainY = trainY[1000:, :]
+            trainX = trainX[600:, :, :]
+            trainY = trainY[600:, :]
 
-        for _ in range(3):
+        for _ in range(2):
         #
             time_of_attack, node_attacked, attack_outcome = model.evaluate_and_predict(trainX, trainY, window_size, f1_threshold, f2_threshold, f3_threshold, ending_timestep, vuln_data)
             times_of_attack = np.append(times_of_attack, time_of_attack)
