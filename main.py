@@ -56,8 +56,8 @@ def main(file_paths, attack_window = 50, ending_timestep = 1800):
 
     # Define the window size and thresholds
     window_size = 10
-    f1_threshold = 1  # confidence in f1
-    f2_threshold = 1    # same as f1 threshold for now
+    f1_threshold = 0.999  # confidence in f1
+    f2_threshold = 0.999   # same as f1 threshold for now
     f3_threshold = 0.1 # numerically tested constant
 
     data_shape = (window_size,trainX.shape[1], trainX.shape[-1])

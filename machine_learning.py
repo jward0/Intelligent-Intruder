@@ -118,16 +118,17 @@ class ML_Intruder:
             replay_buffer_predictions = predictions[0:i,:]
 
             # probability of threshold not occuring in remaining time frame
-            probability_exceed_threshold = (1 - np.sum(replay_buffer_predictions.flatten() >= f2_threshold) / np.sum(replay_buffer_predictions.flatten() != np.nan))*np.square(i/ending_timestep)
+            probability_exceed_threshold = (1 - np.sum(replay_buffer_predictions.flatten() >= f1_threshold) / np.sum(replay_buffer_predictions.flatten() != np.nan))*np.square(i/ending_timestep)
             
             # prob = (1 - np.sum(replay_buffer_predictions.flatten() >= f2_threshold) / np.sum(replay_buffer_predictions.flatten() != np.nan))
             # probabilities[i] = probability_exceed_threshold
 
             f3 = probability_exceed_threshold*prediction.max()
-            # print(prediction.max())
-            # print(f3)
-            # max_index = prediction.argmax()
-            # print(label[:,max_index])
+            print(i)
+            print(prediction.max())
+            print(f3)
+            max_index = prediction.argmax()
+            print(label[:,max_index])
 
 
             # Check the prediction against the threshold
