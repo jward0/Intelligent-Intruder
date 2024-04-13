@@ -33,7 +33,7 @@ def main(file_paths, attack_window = 50, ending_timestep = 1800):
 
     # combine datasets 
     df = pd.concat([vel_data,idle_data,dist_data,vuln_data],axis=1)
-    df = df.replace([np.inf, -np.inf], np.nan) # set all inf values to NaN for later removal
+    df = df.replace([np.inf, -np.inf], np.nan) # set all inf values to NaN for later remova3
 
     # Drop rows with NaN values
     df = df.dropna()

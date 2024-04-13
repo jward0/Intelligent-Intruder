@@ -124,11 +124,11 @@ class ML_Intruder:
             # probabilities[i] = probability_exceed_threshold
 
             f3 = probability_exceed_threshold*prediction.max()
-            print(i)
-            print(prediction.max())
-            print(f3)
-            max_index = prediction.argmax()
-            print(label[:,max_index])
+            # print(i)
+            # print(prediction.max())
+            # print(f3)
+            # max_index = prediction.argmax()
+            # print(label[:,max_index])
 
 
             # Check the prediction against the threshold

@@ -160,9 +160,11 @@ cython_debug/
 #.idea/
 
 #
+cbls_m/
 cbls/
 dtag/
 dtap/
+sebs/
 
 cbls_zip.tar.gz
 dtag_zip.tar.gz
