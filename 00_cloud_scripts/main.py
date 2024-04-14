@@ -12,7 +12,7 @@ import pandas as pd
 import numpy as np
 
 
-def main(file_paths, attack_window = 25, ending_timestep = 600):
+def main(file_paths, attack_window = 125, ending_timestep = 600):
         
 
     file_path, file_path2, file_path3, file_path4 = file_paths
