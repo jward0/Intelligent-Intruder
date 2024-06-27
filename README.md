@@ -2,6 +2,35 @@
 MEng Project - Reinforcement Learning for an Intelligent Intruder
 
 
+## File Information for Repo
+
+- 00_cloud_scripts (directory)
+	- generic structure of essential files used to run scripts on linux cloud computers
+- plot_data (directory)
+	- jupyter notebooks for matplotlib plots of results and final plots used
+- results (directory)
+	- collected results - raw data in text files. Split into final data, initial model testing and f3 threshold testing.
+		- for final data TC is time constraint - meaning how long the robot trains for
+		- for final data AW is attack window - meaning the time taken to complete an attack
+- .DS_store 
+	- think this is a useless file as a byproduct of sloppy commits so just ignore - not going to delete in case
+- .gitignore
+	- standard gitignore file
+- file_paths.txt
+	- text file with current file paths for bash script and main.py to test on
+- file_paths_all.txt
+	- list of all file paths tested on for final results
+- machine_learning.py
+	- python file for DNN architecture built using Keras
+- main.py
+	- python file for main functionality of the adversary - imports machine_learning.py, takes the file paths as an input and cleans the data to be trained on
+		- note that the f1,f2 and f3 thresholds are not variables in this but defined constants - which is something that I think should be changed based on the environment and number of agents
+- requirements.txt 
+	- standard python requirements file
+- run_main.sh 
+	- bash script for main.py, takes file_paths.txt as the file paths for main. Outputs results to cloud_script_results/\{commonprefix\} based on map, agent count and iteration of the data being used to train.
+
+
 ## Sudo Code for Algorithm
 
 

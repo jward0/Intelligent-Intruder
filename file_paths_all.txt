@@ -1,26 +1,18 @@
-
-
-
 dtag/grid/1_agent/0/velocity_metrics.csv dtag/grid/1_agent/0/idleness.csv dtag/grid/1_agent/0/distance_metrics.csv dtag/grid/1_agent/0/vulnerabilities.csv
 dtag/grid/1_agent/1/velocity_metrics.csv dtag/grid/1_agent/1/idleness.csv dtag/grid/1_agent/1/distance_metrics.csv dtag/grid/1_agent/1/vulnerabilities.csv
 dtag/grid/1_agent/2/velocity_metrics.csv dtag/grid/1_agent/2/idleness.csv dtag/grid/1_agent/2/distance_metrics.csv dtag/grid/1_agent/2/vulnerabilities.csv
-
 dtag/grid/2_agents/0/velocity_metrics.csv dtag/grid/2_agents/0/idleness.csv dtag/grid/2_agents/0/distance_metrics.csv dtag/grid/2_agents/0/vulnerabilities.csv
 dtag/grid/2_agents/1/velocity_metrics.csv dtag/grid/2_agents/1/idleness.csv dtag/grid/2_agents/1/distance_metrics.csv dtag/grid/2_agents/1/vulnerabilities.csv
 dtag/grid/2_agents/2/velocity_metrics.csv dtag/grid/2_agents/2/idleness.csv dtag/grid/2_agents/2/distance_metrics.csv dtag/grid/2_agents/2/vulnerabilities.csv
-
 dtag/grid/4_agents/0/velocity_metrics.csv dtag/grid/4_agents/0/idleness.csv dtag/grid/4_agents/0/distance_metrics.csv dtag/grid/4_agents/0/vulnerabilities.csv
 dtag/grid/4_agents/1/velocity_metrics.csv dtag/grid/4_agents/1/idleness.csv dtag/grid/4_agents/1/distance_metrics.csv dtag/grid/4_agents/1/vulnerabilities.csv
 dtag/grid/4_agents/2/velocity_metrics.csv dtag/grid/4_agents/2/idleness.csv dtag/grid/4_agents/2/distance_metrics.csv dtag/grid/4_agents/2/vulnerabilities.csv
-
 dtag/grid/6_agents/1/velocity_metrics.csv dtag/grid/6_agents/1/idleness.csv dtag/grid/6_agents/1/distance_metrics.csv dtag/grid/6_agents/1/vulnerabilities.csv
 dtag/grid/6_agents/2/velocity_metrics.csv dtag/grid/6_agents/2/idleness.csv dtag/grid/6_agents/2/distance_metrics.csv dtag/grid/6_agents/2/vulnerabilities.csv
 dtag/grid/6_agents/0/velocity_metrics.csv dtag/grid/6_agents/0/idleness.csv dtag/grid/6_agents/0/distance_metrics.csv dtag/grid/6_agents/0/vulnerabilities.csv
-
 dtag/grid/8_agents/0/velocity_metrics.csv dtag/grid/8_agents/0/idleness.csv dtag/grid/8_agents/0/distance_metrics.csv dtag/grid/8_agents/0/vulnerabilities.csv
 dtag/grid/8_agents/1/velocity_metrics.csv dtag/grid/8_agents/1/idleness.csv dtag/grid/8_agents/1/distance_metrics.csv dtag/grid/8_agents/1/vulnerabilities.csv
 dtag/grid/8_agents/2/velocity_metrics.csv dtag/grid/8_agents/2/idleness.csv dtag/grid/8_agents/2/distance_metrics.csv dtag/grid/8_agents/2/vulnerabilities.csv
-
 dtag/grid/12_agents/0/velocity_metrics.csv dtag/grid/12_agents/0/idleness.csv dtag/grid/12_agents/0/distance_metrics.csv dtag/grid/12_agents/0/vulnerabilities.csv
 dtag/grid/12_agents/1/velocity_metrics.csv dtag/grid/12_agents/1/idleness.csv dtag/grid/12_agents/1/distance_metrics.csv dtag/grid/12_agents/1/vulnerabilities.csv
 dtag/grid/12_agents/2/velocity_metrics.csv dtag/grid/12_agents/2/idleness.csv dtag/grid/12_agents/2/distance_metrics.csv dtag/grid/12_agents/2/vulnerabilities.csv
