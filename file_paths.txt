@@ -1,15 +1,28 @@
-sebs/grid/6_agents/0/velocity_metrics.csv sebs/grid/6_agents/0/idleness.csv sebs/grid/6_agents/0/distance_metrics.csv sebs/grid/6_agents/0/vulnerabilities.csv
-sebs/grid/6_agents/1/velocity_metrics.csv sebs/grid/6_agents/1/idleness.csv sebs/grid/6_agents/1/distance_metrics.csv sebs/grid/6_agents/1/vulnerabilities.csv
-sebs/grid/6_agents/2/velocity_metrics.csv sebs/grid/6_agents/2/idleness.csv sebs/grid/6_agents/2/distance_metrics.csv sebs/grid/6_agents/2/vulnerabilities.csv
-sebs/grid/8_agents/0/velocity_metrics.csv sebs/grid/8_agents/0/idleness.csv sebs/grid/8_agents/0/distance_metrics.csv sebs/grid/8_agents/0/vulnerabilities.csv
-sebs/grid/8_agents/1/velocity_metrics.csv sebs/grid/8_agents/1/idleness.csv sebs/grid/8_agents/1/distance_metrics.csv sebs/grid/8_agents/1/vulnerabilities.csv
-sebs/grid/8_agents/2/velocity_metrics.csv sebs/grid/8_agents/2/idleness.csv sebs/grid/8_agents/2/distance_metrics.csv sebs/grid/8_agents/2/vulnerabilities.csv
-sebs/grid/12_agents/0/velocity_metrics.csv sebs/grid/12_agents/0/idleness.csv sebs/grid/12_agents/0/distance_metrics.csv sebs/grid/12_agents/0/vulnerabilities.csv
-sebs/grid/12_agents/1/velocity_metrics.csv sebs/grid/12_agents/1/idleness.csv sebs/grid/12_agents/1/distance_metrics.csv sebs/grid/12_agents/1/vulnerabilities.csv
-sebs/grid/12_agents/2/velocity_metrics.csv sebs/grid/12_agents/2/idleness.csv sebs/grid/12_agents/2/distance_metrics.csv sebs/grid/12_agents/2/vulnerabilities.csv
 
-dtag/grid/8_agents/0/velocity_metrics.csv dtag/grid/8_agents/0/idleness.csv dtag/grid/8_agents/0/distance_metrics.csv dtag/grid/8_agents/0/vulnerabilities.csv
-dtag/grid/8_agents/2/velocity_metrics.csv dtag/grid/8_agents/2/idleness.csv dtag/grid/8_agents/2/distance_metrics.csv dtag/grid/8_agents/2/vulnerabilities.csv
-dtag/grid/12_agents/0/velocity_metrics.csv dtag/grid/12_agents/0/idleness.csv dtag/grid/12_agents/0/distance_metrics.csv dtag/grid/12_agents/0/vulnerabilities.csv
-dtag/grid/12_agents/1/velocity_metrics.csv dtag/grid/12_agents/1/idleness.csv dtag/grid/12_agents/1/distance_metrics.csv dtag/grid/12_agents/1/vulnerabilities.csv
-dtag/grid/12_agents/2/velocity_metrics.csv dtag/grid/12_agents/2/idleness.csv dtag/grid/12_agents/2/distance_metrics.csv dtag/grid/12_agents/2/vulnerabilities.csv
+cbls/DIAG_floor1/6_agents/2/velocity_metrics.csv cbls/DIAG_floor1/6_agents/2/idleness.csv cbls/DIAG_floor1/6_agents/2/distance_metrics.csv cbls/DIAG_floor1/6_agents/2/vulnerabilities.csv
+cbls/DIAG_floor1/8_agents/0/velocity_metrics.csv cbls/DIAG_floor1/8_agents/0/idleness.csv cbls/DIAG_floor1/8_agents/0/distance_metrics.csv cbls/DIAG_floor1/8_agents/0/vulnerabilities.csv
+cbls/DIAG_floor1/8_agents/1/velocity_metrics.csv cbls/DIAG_floor1/8_agents/1/idleness.csv cbls/DIAG_floor1/8_agents/1/distance_metrics.csv cbls/DIAG_floor1/8_agents/1/vulnerabilities.csv
+cbls/DIAG_floor1/8_agents/2/velocity_metrics.csv cbls/DIAG_floor1/8_agents/2/idleness.csv cbls/DIAG_floor1/8_agents/2/distance_metrics.csv cbls/DIAG_floor1/8_agents/2/vulnerabilities.csv
+cbls/DIAG_floor1/12_agents/0/velocity_metrics.csv cbls/DIAG_floor1/12_agents/0/idleness.csv cbls/DIAG_floor1/12_agents/0/distance_metrics.csv cbls/DIAG_floor1/12_agents/0/vulnerabilities.csv
+cbls/DIAG_floor1/12_agents/1/velocity_metrics.csv cbls/DIAG_floor1/12_agents/1/idleness.csv cbls/DIAG_floor1/12_agents/1/distance_metrics.csv cbls/DIAG_floor1/12_agents/1/vulnerabilities.csv
+cbls/DIAG_floor1/12_agents/2/velocity_metrics.csv cbls/DIAG_floor1/12_agents/2/idleness.csv cbls/DIAG_floor1/12_agents/2/distance_metrics.csv cbls/DIAG_floor1/12_agents/2/vulnerabilities.csv
+
+
+dtap/DIAG_floor1/8_agents/1/velocity_metrics.csv dtap/DIAG_floor1/8_agents/1/idleness.csv dtap/DIAG_floor1/8_agents/1/distance_metrics.csv dtap/DIAG_floor1/8_agents/1/vulnerabilities.csv
+dtap/DIAG_floor1/8_agents/2/velocity_metrics.csv dtap/DIAG_floor1/8_agents/2/idleness.csv dtap/DIAG_floor1/8_agents/2/distance_metrics.csv dtap/DIAG_floor1/8_agents/2/vulnerabilities.csv
+dtap/DIAG_floor1/12_agents/0/velocity_metrics.csv dtap/DIAG_floor1/12_agents/0/idleness.csv dtap/DIAG_floor1/12_agents/0/distance_metrics.csv dtap/DIAG_floor1/12_agents/0/vulnerabilities.csv
+dtap/DIAG_floor1/12_agents/1/velocity_metrics.csv dtap/DIAG_floor1/12_agents/1/idleness.csv dtap/DIAG_floor1/12_agents/1/distance_metrics.csv dtap/DIAG_floor1/12_agents/1/vulnerabilities.csv
+dtap/DIAG_floor1/12_agents/2/velocity_metrics.csv dtap/DIAG_floor1/12_agents/2/idleness.csv dtap/DIAG_floor1/12_agents/2/distance_metrics.csv dtap/DIAG_floor1/12_agents/2/vulnerabilities.csv
+
+
+sebs/DIAG_floor1/4_agents/1/velocity_metrics.csv sebs/DIAG_floor1/4_agents/1/idleness.csv sebs/DIAG_floor1/4_agents/1/distance_metrics.csv sebs/DIAG_floor1/4_agents/1/vulnerabilities.csv
+sebs/DIAG_floor1/4_agents/2/velocity_metrics.csv sebs/DIAG_floor1/4_agents/2/idleness.csv sebs/DIAG_floor1/4_agents/2/distance_metrics.csv sebs/DIAG_floor1/4_agents/2/vulnerabilities.csv
+sebs/DIAG_floor1/6_agents/0/velocity_metrics.csv sebs/DIAG_floor1/6_agents/0/idleness.csv sebs/DIAG_floor1/6_agents/0/distance_metrics.csv sebs/DIAG_floor1/6_agents/0/vulnerabilities.csv
+sebs/DIAG_floor1/6_agents/1/velocity_metrics.csv sebs/DIAG_floor1/6_agents/1/idleness.csv sebs/DIAG_floor1/6_agents/1/distance_metrics.csv sebs/DIAG_floor1/6_agents/1/vulnerabilities.csv
+sebs/DIAG_floor1/6_agents/2/velocity_metrics.csv sebs/DIAG_floor1/6_agents/2/idleness.csv sebs/DIAG_floor1/6_agents/2/distance_metrics.csv sebs/DIAG_floor1/6_agents/2/vulnerabilities.csv
+sebs/DIAG_floor1/8_agents/0/velocity_metrics.csv sebs/DIAG_floor1/8_agents/0/idleness.csv sebs/DIAG_floor1/8_agents/0/distance_metrics.csv sebs/DIAG_floor1/8_agents/0/vulnerabilities.csv
+sebs/DIAG_floor1/8_agents/1/velocity_metrics.csv sebs/DIAG_floor1/8_agents/1/idleness.csv sebs/DIAG_floor1/8_agents/1/distance_metrics.csv sebs/DIAG_floor1/8_agents/1/vulnerabilities.csv
+sebs/DIAG_floor1/8_agents/2/velocity_metrics.csv sebs/DIAG_floor1/8_agents/2/idleness.csv sebs/DIAG_floor1/8_agents/2/distance_metrics.csv sebs/DIAG_floor1/8_agents/2/vulnerabilities.csv
+sebs/DIAG_floor1/12_agents/0/velocity_metrics.csv sebs/DIAG_floor1/12_agents/0/idleness.csv sebs/DIAG_floor1/12_agents/0/distance_metrics.csv sebs/DIAG_floor1/12_agents/0/vulnerabilities.csv
+sebs/DIAG_floor1/12_agents/1/velocity_metrics.csv sebs/DIAG_floor1/12_agents/1/idleness.csv sebs/DIAG_floor1/12_agents/1/distance_metrics.csv sebs/DIAG_floor1/12_agents/1/vulnerabilities.csv
+sebs/DIAG_floor1/12_agents/2/velocity_metrics.csv sebs/DIAG_floor1/12_agents/2/idleness.csv sebs/DIAG_floor1/12_agents/2/distance_metrics.csv sebs/DIAG_floor1/12_agents/2/vulnerabilities.csv
