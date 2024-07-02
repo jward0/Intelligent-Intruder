@@ -23,7 +23,7 @@ while IFS= read -r line; do
     common_prefix="cloud_script_results/${common_prefix}"
 
     # Call the Python script with the input files
-    python "$python_script_path" "${file_paths[@]}"
+    python3 "$python_script_path" "${file_paths[@]}"
 
     # Check if the results.txt file was created and rename it to include the common prefix
     if [ -f results.txt ]; then
