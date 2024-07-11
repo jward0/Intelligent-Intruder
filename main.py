@@ -32,7 +32,7 @@ def main(strategy, map_, n_agents, trial_no, attack_window=50, time_horizon=600)
     train_y = (data[:, :, -1] >= attack_window).astype(int)
 
     # Define the window size and thresholds
-    observation_size = 1
+    observation_size = 5
     f1_threshold = 0.9  # confidence in f1
     f2_threshold = 0.999  # same as f1 threshold for now
     f3_threshold = 0.1  # numerically tested constant

@@ -37,7 +37,7 @@ def weighted_multilabel_binary_crossentropy(true, pred):
 @tf.function
 def custom_loss(y_true, y_pred):
 
-    positive_weight = 1.0
+    positive_weight = 5.0
     largest_weight = 1.0
 
     bce_loss = binary_crossentropy(tf.expand_dims(y_true, -1), tf.expand_dims(y_pred, -1))
@@ -111,7 +111,14 @@ class ML_Intruder:
         print(model.summary())
         """
         node_input = Input(shape=self.data_shape, name='node_input')
-        transformer_input = TimeDistributed(Flatten())(node_input)
+
+        node_feature_extractor_1 = Conv1D(filters=6, kernel_size=1, activation='leaky_relu')
+        node_feature_extractor_2 = Conv1D(filters=1, kernel_size=1, activation='leaky_relu')
+
+        td_1 = TimeDistributed(node_feature_extractor_1)(node_input)
+        td_2 = TimeDistributed(node_feature_extractor_2)(td_1)
+
+        transformer_input = TimeDistributed(Flatten())(td_2)
         transformer_output = TransformerEncoder(intermediate_dim=4,
                                                 num_heads=3,
                                                 activation='leaky_relu')(transformer_input)
@@ -120,9 +127,13 @@ class ML_Intruder:
 
         dense_output = Dense(self.data_shape[1],
                              activation='sigmoid',
-                             kernel_regularizer=keras.regularizers.L1L2(l1=1e-3))(Flatten()(transformer_output))
+                             kernel_regularizer=keras.regularizers.L1L2(l1=1e-3))(Flatten()(transformer_input))
         model = Model(inputs=node_input, outputs=dense_output)
         print(model.summary())
+
+
+
+
         # The following gives ~25% test precision
         """
         node_input = Input(shape=self.data_shape, name='node_input')
