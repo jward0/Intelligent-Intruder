@@ -7,15 +7,65 @@ main python code for machine learning DNN models
 """
 import tensorflow as tf
 import keras
-from keras.layers import Input, Dense, Flatten, TimeDistributed
-from keras_nlp.layers import TransformerEncoder
+from keras.layers import Input, Dense, Flatten, TimeDistributed, BatchNormalization, Reshape, Conv1D, LSTM, SimpleRNN, Bidirectional, GaussianNoise, Dropout, LayerNormalization
+from keras_nlp.layers import TransformerEncoder, TransformerDecoder
 from keras.models import Model
+from keras.losses import binary_crossentropy
 import numpy as np
+
+from keras import backend as K
+
+import matplotlib.pyplot as plt
+
+
+def weighted_multilabel_binary_crossentropy(true, pred):
+    individual_losses = tf.squeeze(binary_crossentropy(tf.expand_dims(true, -1), tf.expand_dims(pred, -1)))
+    weights = tf.squeeze(tf.math.scalar_mul(1.0, tf.math.add(true, 0)))
+    highest_indices = tf.argmax(pred, axis=-2)
+    # print(individual_losses)
+    # print("___________")
+    # print(weights)
+    # print(pred)
+    # print(highest_indices)
+    # print(tf.ones([1]))
+    weights = tf.tensor_scatter_nd_add(weights, highest_indices, tf.ones(highest_indices.shape[1]))
+    out = tf.math.reduce_mean(tf.math.multiply(individual_losses, weights))
+    # print(out)
+    return out
+
+
+@tf.function
+def custom_loss(y_true, y_pred):
+
+    positive_weight = 1.0
+    largest_weight = 1.0
+
+    bce_loss = binary_crossentropy(tf.expand_dims(y_true, -1), tf.expand_dims(y_pred, -1))
+    max_pred_indices = tf.argmax(y_pred, axis=-1)
+    mask = tf.one_hot(max_pred_indices, depth=y_pred.shape[-1])
+    weighted_loss = bce_loss + (largest_weight - 1) * bce_loss * mask + (positive_weight - 1) * bce_loss * y_true
+
+    return tf.reduce_mean(weighted_loss)
+
+
+def custom_loss_test(y_true, y_pred):
+
+    positive_weight = 5.0
+    largest_weight = 5.0
+
+    bce_loss = binary_crossentropy(tf.expand_dims(y_true, -1), tf.expand_dims(y_pred, -1))
+    max_pred_indices = tf.argmax(y_pred, axis=-1)
+    mask = tf.one_hot(max_pred_indices, depth=y_pred.shape[-1])
+    weighted_loss = bce_loss + (largest_weight - 1) * bce_loss * mask + (positive_weight - 1) * bce_loss * y_true
+
+    return bce_loss, weighted_loss
 
 
 class ML_Intruder:
 
     def __init__(self, data_shape, dense_units, node_embedding_length=4, learning_rate=0.001):
+        super().__init__()
+        np.random.seed(1234)
         tf.random.set_seed(1234)
         self.data_shape = data_shape
         # self.adjacency_shape = adjacency_shape
@@ -25,204 +75,297 @@ class ML_Intruder:
         self.model = self.build_model()
         self.prediction = None
         self.binary_prediction = None
-        self.bce = keras.losses.BinaryCrossentropy()
+        self.bce = keras.losses.BinaryCrossentropy(reduction="sum_over_batch_size")
         self.precision = keras.metrics.Precision(top_k=1)
         self.optimizer = keras.optimizers.Adam(learning_rate=self.learning_rate)
-    
+
     def build_model(self):
         # Currently gives ~80% binary accuracy after 600s
         # Define the input shapes
+        """
         node_input = Input(shape=self.data_shape, name='node_input')
+        # reshaped_input = Reshape((self.data_shape[0], self.data_shape[1]*self.data_shape[2]))(node_input)
+        normalised_input = BatchNormalization(axis=-2)(node_input)
+        # Node-wise convolutional layer
+        node_feature_extractor = Conv1D(filters=1, kernel_size=1, activation='leaky_relu')
+        # TD layer
+        node_features = TimeDistributed(node_feature_extractor)(normalised_input)
+        # out = TransformerEncoder(intermediate_dim=8, num_heads=1, activation='leaky_relu')(node_features)
+        # out = LSTM(units=self.data_shape[1])(Reshape((self.data_shape[0], self.data_shape[1]))(node_features))
+        out = SimpleRNN(self.data_shape[1], activation='sigmoid', kernel_regularizer='l1')(Reshape((self.data_shape[0], self.data_shape[1]))(node_features))
+        # node_features = Flatten()(node_features)
+        # out = Dense(self.data_shape[1], activation='sigmoid')(node_features)
+        model = Model(inputs=node_input, outputs=out)
+        print(model.summary())
+        """
 
+        # The following gives ~30% test precision
+        """
+        node_input = Input(shape=self.data_shape, name='node_input')
+        transformer_output = Flatten()(TransformerEncoder(intermediate_dim=8,
+                                                          num_heads=3,
+                                                          activation='leaky_relu')(node_input))
+        dense_output = Dense(self.data_shape[1],
+                             activation='sigmoid')(transformer_output)
+        model = Model(inputs=node_input, outputs=dense_output)
+        print(model.summary())
+        """
+        node_input = Input(shape=self.data_shape, name='node_input')
+        transformer_input = TimeDistributed(Flatten())(node_input)
+        transformer_output = TransformerEncoder(intermediate_dim=4,
+                                                num_heads=3,
+                                                activation='leaky_relu')(transformer_input)
+
+        n_dense_weights = self.data_shape[0] * self.data_shape[1]**2 * self.data_shape[2]
+
+        dense_output = Dense(self.data_shape[1],
+                             activation='sigmoid',
+                             kernel_regularizer=keras.regularizers.L1L2(l1=1e-3))(Flatten()(transformer_output))
+        model = Model(inputs=node_input, outputs=dense_output)
+        print(model.summary())
+        # The following gives ~25% test precision
+        """
+        node_input = Input(shape=self.data_shape, name='node_input')
+        node_feature_extractor = Conv1D(filters=1, kernel_size=1, activation='leaky_relu')
+        td_output = Flatten()(TimeDistributed(node_feature_extractor)(node_input))
+        dense_output = Dense(self.data_shape[1],
+                             activation='sigmoid')(td_output)
+        model = Model(inputs=node_input, outputs=dense_output)
+        print(model.summary())
+        """
+        # The following gives ~30% test precision, ~75% training precision
+        """
+        node_input = Input(shape=self.data_shape, name='node_input')
+        node_feature_extractor = Conv1D(filters=32, kernel_size=3, activation='relu')
+        td_out_1 = TimeDistributed(node_feature_extractor)(node_input)
+        td_out = TimeDistributed(Flatten())(td_out_1)
+        lstm_out = Bidirectional(LSTM(64, return_sequences=False))(td_out)
+        dense_1 = Dense(128)(lstm_out)
+        dense_2 = Dense(64)(dense_1)
+        dense_out = Dense(self.data_shape[1], activation='sigmoid')(dense_2)
+        model = Model(inputs=node_input, outputs=dense_out)
+        print(model.summary())
+        """
+        # The following gives ~36% test precision
+        """
+        node_input = Input(shape=self.data_shape, name='node_input')
+        node_feature_extractor = Conv1D(filters=16, kernel_size=1, activation='relu')
+        td_out_1 = TimeDistributed(node_feature_extractor)(node_input)
+        td_out = TimeDistributed(Flatten())(td_out_1)
+        lstm_out = Bidirectional(LSTM(32, return_sequences=False))(td_out)
+        dense_1 = Dense(64, activation='leaky_relu')(lstm_out)
+        dense_out = Dense(self.data_shape[1], activation='sigmoid', kernel_regularizer='l1')(dense_1)
+        model = Model(inputs=node_input, outputs=dense_out)
+        print(model.summary())
+        """
+        """
+        node_input = GaussianNoise(1e-2)(Input(shape=self.data_shape, name='node_input'))
+        node_feature_extractor = Conv1D(filters=4, kernel_size=1, activation='relu')
+        td_out_1 = TimeDistributed(node_feature_extractor)(node_input)
+        td_out = TimeDistributed(Flatten())(td_out_1)
+        lstm_out = LSTM(self.data_shape[1], return_sequences=False)(td_out)
+        dense_out = Dense(self.data_shape[1], activation='sigmoid')(lstm_out)
+        model = Model(inputs=node_input, outputs=dense_out)
+        print(model.summary())
+        """
+        """
+        node_input = Input(shape=self.data_shape, name='node_input')
+        # node_input_1 = LayerNormalization(axis=-2)(node_input)
+        # node_input_2 = GaussianNoise(1e-2)(node_input_1)
+        node_feature_extractor_1 = Conv1D(filters=6, kernel_size=1, activation='leaky_relu')
+        node_feature_extractor_2 = Conv1D(filters=1, kernel_size=1, activation='sigmoid')
+        td_out_1 = TimeDistributed(node_feature_extractor_1)(node_input)
+        td_out_2 = TimeDistributed(node_feature_extractor_2)(node_input)
+        td_out = TimeDistributed(Flatten())(td_out_2)
+        dense_out = Dense(self.data_shape[1], activation='sigmoid', kernel_regularizer='l1')(Flatten()(td_out))
+        # lstm_out = SimpleRNN(29, activation='sigmoid')(td_out)
+        # dense_1 = Dense(self.data_shape[1])(lstm_out)
+        # dense_out = Dense(self.data_shape[1], activation='sigmoid', kernel_regularizer=keras.regularizers.L1(l1=1e-4))(lstm_out)
+        model = Model(inputs=node_input, outputs=Flatten()(td_out))
+        print(model.summary())
+        keras.utils.plot_model(model)
+        """
         # TimeDistributed layer with Dense
         # time_output = TimeDistributed(Dense(units=self.node_embedding_length, activation='relu'))(node_input)
-        time_output = TransformerEncoder(intermediate_dim=8, num_heads=3)(node_input)
-        time_output = Flatten()(time_output)
+        # time_output = TransformerEncoder(intermediate_dim=8, num_heads=3, activation='leaky_relu')(node_input)
+        # time_output = TimeDistributed(Dense(units=self.data_shape[1],
+        #                                     kernel_regularizer=keras.regularizers.L1L2(l1=0.00, l2=0.00),
+        #                                     activation='leaky_relu'))(normalised_input)
+        # time_output = Flatten()(time_output)
 
         # Dense layer for the final output
-        dense_output = Dense(self.dense_units, activation='sigmoid')(time_output)
+        # dense_output = Dense(self.dense_units, kernel_regularizer=keras.regularizers.L1L2(l1=0.00, l2=0.00), activation='sigmoid')(time_output)
+        # dense_output = Dense(self.dense_units)(time_output)
 
         # Create the Model
-        model = Model(inputs=node_input, outputs=dense_output)
+        # model = Model(inputs=node_input, outputs=dense_output)
         return model
     
     def compile(self):
         optimizer = tf.keras.optimizers.Adam(learning_rate=self.learning_rate)
         metric = keras.metrics.Precision(top_k=1)
-        self.model.compile(loss='binary_crossentropy', optimizer=optimizer, metrics=[metric, 'precision', 'binary_accuracy', 'true_positives', 'true_negatives', 'false_positives', 'false_negatives'])
+        self.model.compile(loss=custom_loss, optimizer=optimizer, metrics=[metric])
 
-    def train_on_batch(self, data_batch, target_batch):
-        self.model.train_on_batch(data_batch, target_batch)
-    
-    def fit(self, training_data, train_y, epochs, batch_size, verbose):
-        self.model.fit(training_data, train_y, epochs=epochs, batch_size=batch_size, verbose=verbose)
-    
-    def summary(self):
-        self.model.summary()
+    def just_predict(self, train_x, train_y, observation_size, time_horizon, attack_window):
 
-    def predict(self, data):
-        self.prediction = self.model.predict(data)
-        return self.prediction
+        print("Evaluating performance...")
 
-    def binary_predict(self, threshold=0.5):
-        if self.prediction is None:
-            raise ValueError("Must call predict() before calling binary_predict().")
-        self.binary_prediction = (self.prediction > threshold).astype(int)
-        return self.binary_prediction
+        precision_log = []
+        extra_precision_log = []
+
+        m = keras.metrics.Precision()
+        tp = keras.metrics.TruePositives()
+        tn = keras.metrics.TrueNegatives()
+        fp = keras.metrics.FalsePositives()
+        fn = keras.metrics.FalseNegatives()
+
+        for i in range(observation_size + attack_window, time_horizon):
+            latest_obs = train_x[i - (observation_size-1):i + 1]
+
+            predictions = self.model(tf.expand_dims(latest_obs, 0))[0]
+
+            m.update_state(train_y[i], predictions)
+            tp.update_state(train_y[i], predictions)
+            tn.update_state(train_y[i], predictions)
+            fp.update_state(train_y[i], predictions)
+            fn.update_state(train_y[i], predictions)
+
+            if np.max(predictions) >= 0.5:
+                if train_y[i, np.argmax(predictions)] == 1:
+                    precision_log.append(1)
+                    extra_precision_log.append(1)
+                else:
+                    precision_log.append(0)
+                    extra_precision_log.append(np.max(predictions))
+            else:
+                precision_log.append(np.nan)
+
+        extra_precision_log = np.array(extra_precision_log)
+        precision_log = np.array(precision_log)
+        print(m.result())
+        print(tp.result(), tn.result(), fp.result(), fn.result())
+        print(np.mean(precision_log[np.isfinite(precision_log)]))
+        print(len(precision_log[np.isfinite(precision_log)]))
 
     def evaluate_and_predict(self, train_x, train_y, observation_size, time_horizon, attack_window):
 
-        rng = np.random.default_rng(1234)
+        print("Training...")
+
+        rng = np.random.default_rng(seed=1234)
         n_nodes = train_y.shape[1]
 
-        replay_buffer_x_cutoff = observation_size + attack_window - 1
-        replay_buffer_y = np.full(shape=train_y.shape, fill_value=np.nan)
+        # replay_buffer_x_cutoff = observation_size + attack_window - 1
+
+        replay_buffer_y = np.full(shape=train_y.shape, dtype=int, fill_value=np.nan)
+        predictions_log = np.full(shape=train_y.shape, fill_value=np.nan)
+
+        custom_precision_log = np.full(shape=train_y.shape[0], fill_value=np.nan)
+        loss_log = []
+        loss_stderr_log = []
+        best_precision_log = []
+        attack_p_log = []
+        p_remaining_log = []
+
+        extra_precision_log = []
+
+        latest_predictions_log = np.full(shape=train_y.shape, fill_value=np.nan)
+
+        times_sampled = np.ones(shape=time_horizon)
+
+        armed = False
 
         for i in range(observation_size+attack_window, time_horizon):
 
-            replay_buffer_x_cutoff += 1
-            replay_buffer_x = train_x[:replay_buffer_x_cutoff]
+            if i % 100 == 0:
+                print(i)
+
+            # replay_buffer_x_cutoff += 1
+            replay_buffer_x = train_x[:i]
 
             # Update observed labels after node visit or after enough time has passed
-            for j in range(n_nodes):
-                if replay_buffer_x[-1, j, 0] < replay_buffer_x[-2, j, 0]:
-                    # update_indices = np.argwhere(np.isnan(replay_buffer_y[:i, j]))
-                    replay_buffer_y[:i, j] = train_y[:i, j]
-
-            replay_buffer_y[i-(attack_window-1), :] = train_y[i-(attack_window-1), :]
+            replay_buffer_y[:i-attack_window, :] = train_y[:i-attack_window, :]
 
             # Sample a batch from replay buffer
-            batch_size = min(replay_buffer_x_cutoff - (attack_window-observation_size-1), 32)
-            starting_indices = rng.choice(replay_buffer_x_cutoff - (attack_window-observation_size-1), size=batch_size, replace=False)
-            batch_x = replay_buffer_x[[np.arange(idx, idx+observation_size) for idx in starting_indices]]
-            batch_y = replay_buffer_y[[idx+observation_size-1 for idx in starting_indices]]
-
-            keep = np.isfinite(batch_y).all(axis=1)
-            batch_y = batch_y[keep]
-            batch_x = batch_x[keep]
-
+            batch_size = min(i - (attack_window+observation_size-1), 1)
+            p = 1/times_sampled[observation_size-1:i-attack_window]**2 / np.sum(1/times_sampled[observation_size-1:i-attack_window]**2)
+            indices = rng.choice(np.arange(observation_size, i - attack_window + 1)-1, size=batch_size, replace=False, p=p)
+            # indices = np.arange(i-attack_window-batch_size, i-attack_window)
+            batch_x = replay_buffer_x[[np.arange(idx-observation_size, idx)+1 for idx in indices]]
+            batch_y = replay_buffer_y[[idx for idx in indices]]
+            # print(f"+++++++++++++++++ {i}")
             loss = self.model.train_on_batch(batch_x, batch_y)
-            print("-------------------")
-            print(f"Best precision = {loss[1]}, overall_precision = {loss[2]}, accuracy = {loss[3]}")
-            # print(f"tp = {loss[4]}, tn = {loss[5]}, fp = {loss[6]}, fn = {loss[7]}")
+            predictions = self.model.predict_on_batch(batch_x)
 
+            # l1, l2 = custom_loss_test(batch_y, predictions)
+            # print(predictions[0])
+            # print(batch_y[0])
+            # print(l1.numpy()[0])
+            # print(l2.numpy()[0])
+            # print("****************************")
+            # print(custom_loss(batch_y, predictions))
+            # print(tf.reduce_mean(binary_crossentropy(tf.expand_dims(batch_y, -1), tf.expand_dims(predictions, axis=-1))))
 
-    # @tf.function
-    # def evaluate_and_predict(self, train_x, train_y, window_size, f1_threshold, f2_threshold, f3_threshold, ending_timestep, vuln_data):
-    #
-    #     # TODO: fix the stupid alternating conventions between counting forwards and backwards from window
-    #     # TODO: starts and ends respectively, pick one and stick to it
-    #
-    #     predictions = np.full((ending_timestep, train_x.shape[-2]), np.nan)
-    #     replay_buffer_label = np.full((ending_timestep, train_x.shape[-2]), 1.0)
-    #     # probabilities = np.full((ending_timestep, 1), np.nan)
-    #     print(predictions.shape)
-    #
-    #     time_of_attack = ending_timestep
-    #     node_attacked = -1
-    #     attack_outcome = -1
-    #
-    #     rng = np.random.default_rng(1234)
-    #
-    #     replay_buffer_x = []
-    #     replay_buffer_y = []
-    #
-    #     for i in range(window_size, ending_timestep):
-    #
-    #         print(train_x[i])
-    #         print(train_y[i])
-    #         print("_____________________________-")
-    #
-    #     for i in range(window_size, ending_timestep):
-    #
-    #         # Get the most recent window of data
-    #         window_data = train_x[i-window_size:i, :, :]
-    #         window_data = window_data[np.newaxis, ...]  # Add batch dimension
-    #
-    #         # # Get the corresponding label
-    #         label = train_y[i, :]
-    #         label = label[np.newaxis, ...]  # Add batch dimension
-    #
-    #         # Set replay buffer as all sequential data so far
-    #         replay_buffer = train_x[:i, :, :]
-    #
-    #         # update replay buffer labels appropriately
-    #         vuln_threshold = vuln_data[i, :] <= 1
-    #         replay_buffer_label[:i, vuln_threshold] = train_y[:i, vuln_threshold]
-    #
-    #         # Sample a batch from the replay buffer
-    #         batch_size = min(len(replay_buffer)-(window_size-1), 32)  # Example batch size=32
-    #
-    #         # generate random batch indices
-    #         starting_indices = rng.choice(len(replay_buffer) - (window_size-1), size=batch_size, replace=False)
-    #         # starting_index = np.random.randint(0, len(replay_buffer) - (window_size-1), size=batch_size)
-    #
-    #         # Generate the indices for the adjacent window
-    #         indices = [np.arange(idx, idx + window_size) for idx in starting_indices]
-    #
-    #         # Extract the batch samples and labels using the sampled indices
-    #         replay_batch = replay_buffer[indices]
-    #         replay_batch_labels = replay_buffer_label[[j+(window_size-1) for j in starting_indices]]
-    #
-    #         # Convert the batch to arrays
-    #         replay_batch_array = np.array(replay_batch)
-    #         replay_batch_labels_array = np.array(replay_batch_labels)
-    #
-    #         # TODO: custom loop this (it'll be faster)
-    #         # Training predictions
-    #         training_predictions = self.model(replay_batch_array, training=False).numpy()
-    #         for ndx, j in enumerate(starting_indices):
-    #             predictions[j+window_size-1] = training_predictions[ndx]
-    #
-    #         # Train on the replay batch
-    #         loss = self.model.train_on_batch(replay_batch_array, replay_batch_labels_array)
-    #         print(training_predictions)
-    #         print(replay_batch_labels_array)
-    #         print(f"top-1 precision = {loss[1]}")
-    #
-    #         # Predict attack
-    #         prediction = self.model(window_data, training=False).numpy()
-    #         predictions[i] = prediction
-    #
-    #         # Replay buffer for model predictions
-    #         replay_buffer_predictions = predictions[:i+1, :]
-    #
-    #         # print(prediction)
-    #         # print(replay_buffer_predictions[-1])
-    #
-    #         # TODO: better combination of confidence level with remaining opportunities (makes thresholding more sensible)
-    #
-    #         # print(np.max(replay_buffer_predictions >= f1_threshold))
-    #         # print(replay_buffer_predictions[-1])
-    #
-    #         # probability of threshold not occurring in remaining time frame
-    #         # p_a =
-    #         # probability_exceed_threshold = ()
-    #         probability_exceed_threshold = (1 - np.sum(replay_buffer_predictions.flatten() >= f1_threshold) / np.sum(replay_buffer_predictions.flatten() != np.nan))*np.square(i/ending_timestep)
-    #
-    #         # prob = (1 - np.sum(replay_buffer_predictions.flatten() >= f2_threshold) / np.sum(replay_buffer_predictions.flatten() != np.nan))
-    #         # probabilities[i] = probability_exceed_threshold
-    #
-    #         f3 = probability_exceed_threshold*prediction.max()
-    #         # print(i)
-    #         # print(prediction.max())
-    #         # print(f3)
-    #         # max_index = prediction.argmax()
-    #         # print(label[:,max_index])
-    #
-    #         # Check the prediction against the threshold
-    #         """
-    #         if (f3 >= f3_threshold) & (prediction.max() >= f1_threshold):
-    #             max_index = prediction.argmax()
-    #             print(f"Threshold reached with prediction: {prediction.max()} at timestep: {i}")
-    #             print(f"Attack successful = {label[:,max_index]==1} | at timestep: {i}")
-    #             time_of_attack = i
-    #             node_attacked = max_index + 1
-    #             attack_outcome = label[:, max_index]
-    #
-    #             break
-    #         """
-    #     tf.keras.backend.clear_session()
-    #     return time_of_attack, node_attacked, attack_outcome
+            for j, idx in enumerate(indices):
 
+                times_sampled[idx] += 1
+
+                predictions_log[idx] = predictions[j]
+                max_ndx = np.argmax(predictions[j])
+
+                if predictions[j, max_ndx] >= 0.5:
+                    if batch_y[j, max_ndx] == 1:
+                        custom_precision_log[idx] = 1
+                    else:
+                        custom_precision_log[idx] = 0
+                else:
+                    custom_precision_log[idx] = np.nan
+
+            best_precision_log.append(np.mean(custom_precision_log[np.isfinite(custom_precision_log)]))
+            loss_log.append(loss[0])
+
+            p_attack = np.mean((predictions_log[np.isfinite(predictions_log).all(axis=1)] >= 0.5).any(axis=1))
+            attack_p_log.append(p_attack)
+            p_window_from_now = max(1 - (1-(p_attack))**(time_horizon-attack_window-i), 0)
+            p_remaining_log.append(p_window_from_now)
+
+            # if (1-p_window_from_now)*10 > (1-best_precision_log[-1]) and not armed:
+            #     armed = True
+            #
+            # if armed:
+            #     current_predictions = self.model(tf.expand_dims(latest_obs, 0)).numpy()[0]
+            #     print(current_predictions)
+            #     print(train_y[i])
+            #     if np.max(current_predictions) >= 0.5:
+            #         print(f"Attacking at timestep {i} at node {np.argmax(current_predictions)}")
+            #         if train_y[i, np.argmax(current_predictions)] == 1:
+            #             print("Success!")
+            #         else:
+            #             print("Failure!")
+            #         break
+
+            # current_prediction = self.model(latest_obs)
+
+        # extra_precision_log = np.array(extra_precision_log)
+        # print(np.mean(extra_precision_log[np.isfinite(extra_precision_log)]))
+        # print(np.mean(custom_precision_log[np.isfinite(custom_precision_log)]))
+        # print(len(custom_precision_log[np.isfinite(custom_precision_log)]))
+
+        # print(extra_precision_log[:10])
+        # print(custom_precision_log[400:410])
+
+        # for j in range(400, 410):
+        #     print(replay_buffer_y[j])
+        #     print(train_y[j])
+
+        # print(predictions_log[500:510])
+        # print(latest_predictions_log[500:510])
+        # print(train_y[500:510])
+
+        # plt.plot(best_precision_log)
+        # plt.plot(attack_p_log)
+        # plt.plot(loss_log)
+        # plt.plot(np.arange(25, len(loss_log)), [np.std(loss_log[i-25:i])/np.mean(loss_log[i-25:i]) for i in np.arange(25, len(loss_log))])
+        # plt.plot([np.std(loss_log[:j])/(j**0.5) for j in range(len(loss_log))])
+        # plt.plot(p_remaining_log)
+        # plt.show()
 
