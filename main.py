@@ -12,7 +12,7 @@ import pandas as pd
 import numpy as np
 
 
-def main(strategy, map_, n_agents, trial_no, attack_window=50, time_horizon=600):
+def main(strategy, map_, n_agents, trial_no, attack_window=50, time_horizon=600, l1_magnitude=1.0, batch_size=1, pos_weight=1.0):
 
     extension = f"../datasets/{strategy}/{map_}/{n_agents}_agent{'s' if n_agents > 1 else ''}/{trial_no}/"
 
@@ -43,22 +43,27 @@ def main(strategy, map_, n_agents, trial_no, attack_window=50, time_horizon=600)
     nodes_attacked = np.array([])
     attack_outcomes = np.array([])
 
-    for i in range(1):
-        # Drop the first n timesteps from train_x and train_y
-        # TODO: WHY?
-        if i > 0:
-            train_x = train_x[600:, :, :]
-            train_y = train_y[600:, :]
+    n_tests = 3
+    repeats_per_data = 1
 
-        for _ in range(1):
+    outcomes = np.zeros(shape=(n_tests, 7))
+
+    for i in range(n_tests):
+
+        if i > 0:
+            train_x = train_x[time_horizon:, :, :]
+            train_y = train_y[time_horizon:, :]
+
+        for _ in range(repeats_per_data):
             # Reset and compile the model
-            model = ml.ML_Intruder(data_shape, n_nodes)
+            model = ml.ML_Intruder(data_shape, n_nodes, l1_magnitude=l1_magnitude, batch_size=batch_size, pos_weight=pos_weight)
             model.compile()
 
-            model.just_predict(train_x, train_y, observation_size, time_horizon, attack_window)
+            # model.just_predict(train_x, train_y, observation_size, time_horizon, attack_window)
             model.evaluate_and_predict(train_x, train_y, observation_size, time_horizon, attack_window)
-            model.just_predict(train_x[time_horizon:], train_y[time_horizon:], observation_size, time_horizon, attack_window)
-            model.just_predict(train_x, train_y, observation_size, time_horizon, attack_window)
+            results = model.just_predict(train_x[time_horizon:], train_y[time_horizon:], observation_size, time_horizon, attack_window)
+            outcomes[i] = np.insert(results, 0, i)
+            # model.just_predict(train_x, train_y, observation_size, time_horizon, attack_window)
 
             # time_of_attack, node_attacked, attack_outcome = model.evaluate_and_predict(
             #     train_x,
@@ -73,13 +78,15 @@ def main(strategy, map_, n_agents, trial_no, attack_window=50, time_horizon=600)
             # nodes_attacked = np.append(nodes_attacked, node_attacked)
             # attack_outcomes = np.append(attack_outcomes, attack_outcome)
 
-    # Output results to a text file
-    # output_file = 'results.txt'
-    # with open(output_file, 'w') as f:
-    #     f.write('{}\n'.format(';'.join(map(str, times_of_attack))))
-    #     f.write('{}\n'.format(';'.join(map(str, nodes_attacked))))
-    #     f.write('{}\n'.format(';'.join(map(str, attack_outcomes))))
-        
+    # Output results to a csv
+
+    filename = f"../datasets/{l1_magnitude}_{batch_size}_{pos_weight}_{attack_window}_{time_horizon}_{strategy}_{map_}_{n_agents}.csv"
+
+    np.savetxt(filename,
+               outcomes,
+               delimiter=',',
+               header="best_precision,overall_precision,true_positives,true_negatives,false_positives,false_negatives")
+
 
 if __name__ == '__main__':
 
@@ -115,17 +122,44 @@ if __name__ == '__main__':
         type=int,
         default=[],
     )
+    args.add_argument(
+        "-b", "--batch_size",
+        nargs="*",
+        type=int,
+        default=[],
+    )
+
+    args.add_argument(
+        "-p", "--pos_weight",
+        nargs="*",
+        type=float,
+        default=[],
+    )
+    args.add_argument(
+        "-l", "--l1_magnitude",
+        nargs="*",
+        type=float,
+        default=[],
+    )
 
     a = args.parse_args()
 
     strategies = a.strategies
     maps = a.maps
     na = a.n_agents
-    ad = a.attack_duration[0]
-    th = a.time_horizon[0]
+    ad = a.attack_duration
+    th = a.time_horizon
+    bs = a.batch_size
+    pw = a.pos_weight
+    lm = a.l1_magnitude
 
-    for s in strategies:
-        for m in maps:
-            for n in na:
-                for run in [0]:
-                    main(s, m, n, run, ad, th)
+    for l in lm:
+        for b in bs:
+            for p in pw:
+                for a in ad:
+                    for t in th:
+                        for s in strategies:
+                            for m in maps:
+                                for n in na:
+                                    for run in [0]:
+                                        main(s, m, n, run, a, t, l, b, p)

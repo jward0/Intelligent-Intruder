@@ -8,62 +8,41 @@ main python code for machine learning DNN models
 import tensorflow as tf
 import keras
 from keras.layers import Input, Dense, Flatten, TimeDistributed, BatchNormalization, Reshape, Conv1D, LSTM, SimpleRNN, Bidirectional, GaussianNoise, Dropout, LayerNormalization
-from keras_nlp.layers import TransformerEncoder, TransformerDecoder
+# from keras_nlp.layers import TransformerEncoder, TransformerDecoder
 from keras.models import Model
 from keras.losses import binary_crossentropy
 import numpy as np
 
-from keras import backend as K
-
-import matplotlib.pyplot as plt
-
-
-def weighted_multilabel_binary_crossentropy(true, pred):
-    individual_losses = tf.squeeze(binary_crossentropy(tf.expand_dims(true, -1), tf.expand_dims(pred, -1)))
-    weights = tf.squeeze(tf.math.scalar_mul(1.0, tf.math.add(true, 0)))
-    highest_indices = tf.argmax(pred, axis=-2)
-    # print(individual_losses)
-    # print("___________")
-    # print(weights)
-    # print(pred)
-    # print(highest_indices)
-    # print(tf.ones([1]))
-    weights = tf.tensor_scatter_nd_add(weights, highest_indices, tf.ones(highest_indices.shape[1]))
-    out = tf.math.reduce_mean(tf.math.multiply(individual_losses, weights))
-    # print(out)
-    return out
-
-
-@tf.function
-def custom_loss(y_true, y_pred):
-
-    positive_weight = 5.0
-    largest_weight = 1.0
-
-    bce_loss = binary_crossentropy(tf.expand_dims(y_true, -1), tf.expand_dims(y_pred, -1))
-    max_pred_indices = tf.argmax(y_pred, axis=-1)
-    mask = tf.one_hot(max_pred_indices, depth=y_pred.shape[-1])
-    weighted_loss = bce_loss + (largest_weight - 1) * bce_loss * mask + (positive_weight - 1) * bce_loss * y_true
-
-    return tf.reduce_mean(weighted_loss)
-
-
-def custom_loss_test(y_true, y_pred):
-
-    positive_weight = 5.0
-    largest_weight = 5.0
-
-    bce_loss = binary_crossentropy(tf.expand_dims(y_true, -1), tf.expand_dims(y_pred, -1))
-    max_pred_indices = tf.argmax(y_pred, axis=-1)
-    mask = tf.one_hot(max_pred_indices, depth=y_pred.shape[-1])
-    weighted_loss = bce_loss + (largest_weight - 1) * bce_loss * mask + (positive_weight - 1) * bce_loss * y_true
-
-    return bce_loss, weighted_loss
+# @tf.function
+# def custom_loss(y_true, y_pred):
+#
+#     positive_weight = 5.0
+#     largest_weight = 5.0
+#
+#     bce_loss = binary_crossentropy(tf.expand_dims(y_true, -1), tf.expand_dims(y_pred, -1))
+#     max_pred_indices = tf.argmax(y_pred, axis=-1)
+#     mask = tf.one_hot(max_pred_indices, depth=y_pred.shape[-1])
+#     weighted_loss = bce_loss + (largest_weight - 1) * bce_loss * mask + (positive_weight - 1) * bce_loss * y_true
+#
+#     return tf.reduce_mean(weighted_loss)
+#
+#
+# def custom_loss_test(y_true, y_pred):
+#
+#     positive_weight = 5.0
+#     largest_weight = 5.0
+#
+#     bce_loss = binary_crossentropy(tf.expand_dims(y_true, -1), tf.expand_dims(y_pred, -1))
+#     max_pred_indices = tf.argmax(y_pred, axis=-1)
+#     mask = tf.one_hot(max_pred_indices, depth=y_pred.shape[-1])
+#     weighted_loss = bce_loss + (largest_weight - 1) * bce_loss * mask + (positive_weight - 1) * bce_loss * y_true
+#
+#     return bce_loss, weighted_loss
 
 
 class ML_Intruder:
 
-    def __init__(self, data_shape, dense_units, node_embedding_length=4, learning_rate=0.001):
+    def __init__(self, data_shape, dense_units, node_embedding_length=4, learning_rate=0.001, l1_magnitude=1.0, batch_size=1, pos_weight=1.0):
         super().__init__()
         np.random.seed(1234)
         tf.random.set_seed(1234)
@@ -72,12 +51,31 @@ class ML_Intruder:
         self.node_embedding_length = node_embedding_length
         self.dense_units = dense_units
         self.learning_rate = learning_rate
+        self.batch_size = batch_size
+        self.pos_weight = pos_weight
+        self.lar_weight = 1.0
+        self.l1_magnitude = l1_magnitude
         self.model = self.build_model()
         self.prediction = None
         self.binary_prediction = None
         self.bce = keras.losses.BinaryCrossentropy(reduction="sum_over_batch_size")
         self.precision = keras.metrics.Precision(top_k=1)
         self.optimizer = keras.optimizers.Adam(learning_rate=self.learning_rate)
+        self.positives = 0
+        self.negatives = 0
+
+    # @tf.function
+    def custom_loss(self, y_true, y_pred):
+
+        positive_weight = self.pos_weight * ((self.negatives / np.max((self.positives, 1))) - 1)
+        largest_weight = self.lar_weight
+
+        bce_loss = binary_crossentropy(tf.expand_dims(y_true, -1), tf.expand_dims(y_pred, -1))
+        max_pred_indices = tf.argmax(y_pred, axis=-1)
+        mask = tf.one_hot(max_pred_indices, depth=y_pred.shape[-1])
+        weighted_loss = bce_loss + (largest_weight - 1) * bce_loss * mask + positive_weight * bce_loss * y_true
+
+        return tf.reduce_mean(weighted_loss)
 
     def build_model(self):
         # Currently gives ~80% binary accuracy after 600s
@@ -119,20 +117,18 @@ class ML_Intruder:
         td_2 = TimeDistributed(node_feature_extractor_2)(td_1)
 
         transformer_input = TimeDistributed(Flatten())(td_2)
-        transformer_output = TransformerEncoder(intermediate_dim=4,
-                                                num_heads=3,
-                                                activation='leaky_relu')(transformer_input)
+        # transformer_output = TransformerEncoder(intermediate_dim=4,
+        #                                         num_heads=3,
+        #                                         activation='leaky_relu')(transformer_input)
 
-        n_dense_weights = self.data_shape[0] * self.data_shape[1]**2 * self.data_shape[2]
+        n_dense_weights = self.data_shape[0] * self.data_shape[1]**2 + self.data_shape[1]
+        l1_factor = self.l1_magnitude/n_dense_weights
 
         dense_output = Dense(self.data_shape[1],
                              activation='sigmoid',
-                             kernel_regularizer=keras.regularizers.L1L2(l1=1e-3))(Flatten()(transformer_input))
+                             kernel_regularizer=keras.regularizers.L1L2(l1=l1_factor))(Flatten()(transformer_input))
         model = Model(inputs=node_input, outputs=dense_output)
         print(model.summary())
-
-
-
 
         # The following gives ~25% test precision
         """
@@ -215,7 +211,7 @@ class ML_Intruder:
     def compile(self):
         optimizer = tf.keras.optimizers.Adam(learning_rate=self.learning_rate)
         metric = keras.metrics.Precision(top_k=1)
-        self.model.compile(loss=custom_loss, optimizer=optimizer, metrics=[metric])
+        self.model.compile(loss=self.custom_loss, optimizer=optimizer, metrics=['precision'], run_eagerly=True)
 
     def just_predict(self, train_x, train_y, observation_size, time_horizon, attack_window):
 
@@ -258,6 +254,8 @@ class ML_Intruder:
         print(np.mean(precision_log[np.isfinite(precision_log)]))
         print(len(precision_log[np.isfinite(precision_log)]))
 
+        return np.array([np.mean(precision_log[np.isfinite(precision_log)]), m.result(), tp.result(), tn.result(), fp.result(), fn.result()])
+
     def evaluate_and_predict(self, train_x, train_y, observation_size, time_horizon, attack_window):
 
         print("Training...")
@@ -297,24 +295,16 @@ class ML_Intruder:
             replay_buffer_y[:i-attack_window, :] = train_y[:i-attack_window, :]
 
             # Sample a batch from replay buffer
-            batch_size = min(i - (attack_window+observation_size-1), 1)
+            batch_size = min(i - (attack_window+observation_size-1), self.batch_size)
             p = 1/times_sampled[observation_size-1:i-attack_window]**2 / np.sum(1/times_sampled[observation_size-1:i-attack_window]**2)
             indices = rng.choice(np.arange(observation_size, i - attack_window + 1)-1, size=batch_size, replace=False, p=p)
-            # indices = np.arange(i-attack_window-batch_size, i-attack_window)
-            batch_x = replay_buffer_x[[np.arange(idx-observation_size, idx)+1 for idx in indices]]
-            batch_y = replay_buffer_y[[idx for idx in indices]]
-            # print(f"+++++++++++++++++ {i}")
+            batch_x = train_x[[np.arange(idx-observation_size, idx)+1 for idx in indices]]
+            batch_y = train_y[[idx for idx in indices]]
             loss = self.model.train_on_batch(batch_x, batch_y)
             predictions = self.model.predict_on_batch(batch_x)
 
-            # l1, l2 = custom_loss_test(batch_y, predictions)
-            # print(predictions[0])
-            # print(batch_y[0])
-            # print(l1.numpy()[0])
-            # print(l2.numpy()[0])
-            # print("****************************")
-            # print(custom_loss(batch_y, predictions))
-            # print(tf.reduce_mean(binary_crossentropy(tf.expand_dims(batch_y, -1), tf.expand_dims(predictions, axis=-1))))
+            self.positives += np.sum(train_y[i-attack_window])
+            self.negatives += train_y[i-attack_window].shape[0] - np.sum(train_y[i-attack_window])
 
             for j, idx in enumerate(indices):
 
