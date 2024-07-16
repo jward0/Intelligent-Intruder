@@ -13,6 +13,8 @@ from keras.models import Model
 from keras.losses import binary_crossentropy
 import numpy as np
 
+import matplotlib.pyplot as plt
+
 # @tf.function
 # def custom_loss(y_true, y_pred):
 #
@@ -240,15 +242,16 @@ class ML_Intruder:
             if np.max(predictions) >= 0.5:
                 if train_y[i, np.argmax(predictions)] == 1:
                     precision_log.append(1)
-                    extra_precision_log.append(1)
+                    extra_precision_log.append(np.max(predictions))
                 else:
                     precision_log.append(0)
-                    extra_precision_log.append(np.max(predictions))
+                    extra_precision_log.append(0)
             else:
                 precision_log.append(np.nan)
 
         extra_precision_log = np.array(extra_precision_log)
         precision_log = np.array(precision_log)
+
         print(m.result())
         print(tp.result(), tn.result(), fp.result(), fn.result())
         print(np.mean(precision_log[np.isfinite(precision_log)]))
@@ -274,6 +277,7 @@ class ML_Intruder:
         best_precision_log = []
         attack_p_log = []
         p_remaining_log = []
+        remaining_steps_tracker = []
 
         extra_precision_log = []
 
@@ -326,23 +330,25 @@ class ML_Intruder:
 
             p_attack = np.mean((predictions_log[np.isfinite(predictions_log).all(axis=1)] >= 0.5).any(axis=1))
             attack_p_log.append(p_attack)
-            p_window_from_now = max(1 - (1-(p_attack))**(time_horizon-attack_window-i), 0)
+            remaining_steps_tracker.append(time_horizon-attack_window-i)
+            p_window_from_now = max(1 - (1-p_attack)**(time_horizon-attack_window-i), 0)
             p_remaining_log.append(p_window_from_now)
 
-            # if (1-p_window_from_now)*10 > (1-best_precision_log[-1]) and not armed:
-            #     armed = True
+            if ((1-p_window_from_now)*10 > (1-best_precision_log[-1]) and not armed) or i == time_horizon - attack_window:
+                armed = True
             #
-            # if armed:
-            #     current_predictions = self.model(tf.expand_dims(latest_obs, 0)).numpy()[0]
-            #     print(current_predictions)
-            #     print(train_y[i])
-            #     if np.max(current_predictions) >= 0.5:
-            #         print(f"Attacking at timestep {i} at node {np.argmax(current_predictions)}")
-            #         if train_y[i, np.argmax(current_predictions)] == 1:
-            #             print("Success!")
-            #         else:
-            #             print("Failure!")
-            #         break
+            if armed:
+                latest_obs = train_x[i-observation_size+1:i+1]
+                current_predictions = self.model(tf.expand_dims(latest_obs, 0)).numpy()[0]
+                print(current_predictions)
+                print(train_y[i])
+                if np.max(current_predictions) >= 0.5:
+                    print(f"Attacking at timestep {i} at node {np.argmax(current_predictions)}")
+                    if train_y[i, np.argmax(current_predictions)] == 1:
+                        print("Success!")
+                    else:
+                        print("Failure!")
+                    break
 
             # current_prediction = self.model(latest_obs)
 
