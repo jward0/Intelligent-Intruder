@@ -187,3 +187,7 @@ problem_results/
 180s/
 
 results/
+test_results/
+cloud_script_results/
+new_parameter_sweep_results/
+parameter_sweep_results/
