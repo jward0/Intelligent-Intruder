@@ -13,6 +13,8 @@ from keras.models import Model
 from keras.losses import binary_crossentropy
 import numpy as np
 
+from line_profiler_pycharm import profile
+
 import matplotlib.pyplot as plt
 
 # @tf.function
@@ -197,6 +199,7 @@ class ML_Intruder:
 
         return np.array([np.mean(precision_log[np.isfinite(precision_log)]), m.result(), tp.result(), tn.result(), fp.result(), fn.result()])
 
+    @profile
     def evaluate_and_predict(self, train_x, train_y, observation_size, time_horizon, attack_window):
 
         print("Training...")
@@ -238,7 +241,7 @@ class ML_Intruder:
             replay_buffer_x = train_x[:i]
 
             # Update observed labels after node visit or after enough time has passed
-            replay_buffer_y[:i-attack_window, :] = train_y[:i-attack_window, :]
+            # replay_buffer_y[:i-attack_window, :] = train_y[:i-attack_window, :]
 
             # Sample a batch from replay buffer
             batch_size = min(i - (attack_window+observation_size-1), self.batch_size)
@@ -247,36 +250,36 @@ class ML_Intruder:
             batch_x = train_x[[np.arange(idx-observation_size, idx)+1 for idx in indices]]
             batch_y = train_y[[idx for idx in indices]]
             loss = self.model.train_on_batch(batch_x, batch_y)
-            predictions = self.model.predict_on_batch(batch_x)
+            # predictions = self.model.predict_on_batch(batch_x)
 
             self.positives += np.sum(train_y[i-attack_window])
             self.negatives += train_y[i-attack_window].shape[0] - np.sum(train_y[i-attack_window])
 
-            for j, idx in enumerate(indices):
+            # for j, idx in enumerate(indices):
+            #
+            #     times_sampled[idx] += 1
+            #
+            #     predictions_log[idx] = predictions[j]
+            #     max_ndx = np.argmax(predictions[j])
+            #
+            #     for k in range(train_y.shape[1]):
+            #         if predictions[j, k] >= 0.5:
+            #             if batch_y[j, k] == 1:
+            #                 nodewise_precision_log[idx, k] = 1
+            #             else:
+            #                 nodewise_precision_log[idx, k] = 0
+            #         else:
+            #             nodewise_precision_log[idx, k] = np.nan
+            #
+            #     if predictions[j, max_ndx] >= 0.5:
+            #         if batch_y[j, max_ndx] == 1:
+            #             custom_precision_log[idx] = 1
+            #         else:
+            #             custom_precision_log[idx] = 0
+            #     else:
+            #         custom_precision_log[idx] = np.nan
 
-                times_sampled[idx] += 1
-
-                predictions_log[idx] = predictions[j]
-                max_ndx = np.argmax(predictions[j])
-
-                for k in range(train_y.shape[1]):
-                    if predictions[j, k] >= 0.5:
-                        if batch_y[j, k] == 1:
-                            nodewise_precision_log[idx, k] = 1
-                        else:
-                            nodewise_precision_log[idx, k] = 0
-                    else:
-                        nodewise_precision_log[idx, k] = np.nan
-
-                if predictions[j, max_ndx] >= 0.5:
-                    if batch_y[j, max_ndx] == 1:
-                        custom_precision_log[idx] = 1
-                    else:
-                        custom_precision_log[idx] = 0
-                else:
-                    custom_precision_log[idx] = np.nan
-
-            best_precision_log.append(np.mean(custom_precision_log[np.isfinite(custom_precision_log)]))
+            # best_precision_log.append(np.mean(custom_precision_log[np.isfinite(custom_precision_log)]))
             loss_log.append(loss[0])
 
             p_attack = np.mean((predictions_log[np.isfinite(predictions_log).all(axis=1)] >= 0.5).any(axis=1))

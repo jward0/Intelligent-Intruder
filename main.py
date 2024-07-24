@@ -104,7 +104,7 @@ def get_dataset_results(data, attack_window, time_horizon, n_tests, model_params
 
     data_shape = (observation_size, train_x.shape[1], train_x.shape[-1])
 
-    outcomes = np.zeros(shape=(n_tests, 7))
+    outcomes = np.zeros(shape=n_tests)
 
     spacing = int((train_x.shape[0] - time_horizon)/n_tests)
 
@@ -123,9 +123,9 @@ def get_dataset_results(data, attack_window, time_horizon, n_tests, model_params
         model.compile()
 
         success = model.evaluate_and_predict(train_x_n, train_y_n, observation_size, time_horizon, attack_window)
-        results = model.just_predict(train_x[time_horizon:], train_y[time_horizon:], observation_size, time_horizon, attack_window)
+        # results = model.just_predict(train_x[time_horizon:], train_y[time_horizon:], observation_size, time_horizon, attack_window)
 
-        outcomes[i] = [*results, success]
+        outcomes[i] = success
 
     return outcomes
 
@@ -138,10 +138,10 @@ def main(strategy, map_, n_agents, attack_windows, time_horizons, l1_magnitude=0
     n_tests = 10
 
     extension = f"{strategy}/{map_}/{n_agents}_agent{'s' if n_agents > 1 else ''}"
-    if not os.path.exists(f"results/{extension}"):
-        os.makedirs(f"results/{extension}")
+    if not os.path.exists(f"../datasets/results/{extension}"):
+        os.makedirs(f"../datasets/results/{extension}")
 
-    th_results = [np.zeros(shape=(len(attack_windows), 2)) for _ in range(len(time_horizons))]
+    th_results = [np.zeros(shape=len(attack_windows)) for _ in range(len(time_horizons))]
 
     for run in runs:
 
@@ -171,12 +171,13 @@ def main(strategy, map_, n_agents, attack_windows, time_horizons, l1_magnitude=0
                 data = data[np.isfinite(data).all(axis=2).all(axis=1), :, :]  # Trim inf and NaN at start and end of data
 
                 outcomes = get_dataset_results(data, attack_window, time_horizon, n_tests, model_params)
-                th_results[th_ndx][aw_ndx, 0] += np.mean(outcomes[:, 0]) / len(runs)
-                th_results[th_ndx][aw_ndx, 1] += np.mean(outcomes[:, 6]) / len(runs)
+                th_results[th_ndx][aw_ndx] += np.mean(outcomes) / len(runs)
+
+                np.savetxt(f"../datasets/results/{extension}/{time_horizon}_{attack_window}.csv", outcomes, delimiter=',')
 
     for (th_ndx, time_horizon) in enumerate(time_horizons):
-        np.savetxt(f"results/{extension}/{time_horizon}.csv", th_results[th_ndx], delimiter=',')
-        np.save(f"results/{extension}/{time_horizon}.npy", th_results[th_ndx])
+        np.savetxt(f"../datasets/results/{extension}/{time_horizon}.csv", th_results[th_ndx], delimiter=',')
+        np.save(f"../datasets/results/{extension}/{time_horizon}.npy", th_results[th_ndx])
 
 
 if __name__ == '__main__':
