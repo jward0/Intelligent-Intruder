@@ -150,6 +150,8 @@ def main(strategy, map_, n_agents, attack_windows, time_horizons, l1_magnitude=0
         vel_data = np.genfromtxt(f"../datasets/{extension}/{run}/velocity_metrics.csv", delimiter=';')[:, 1:]
         vuln_data = np.genfromtxt(f"../datasets/{extension}/{run}/vulnerabilities.csv", delimiter=';')[:, 1:]
 
+        vuln_data[np.isinf(vuln_data)] = 9999
+
         if strategy == "DTAP" and map_ == "DIAG_floor1" and n_agents == 1:
             idle_data = idle_data[:19000]
             dist_data = dist_data[:19000]
@@ -173,7 +175,7 @@ def main(strategy, map_, n_agents, attack_windows, time_horizons, l1_magnitude=0
                 outcomes = get_dataset_results(data, attack_window, time_horizon, n_tests, model_params)
                 th_results[th_ndx][aw_ndx] += np.mean(outcomes) / len(runs)
 
-                np.savetxt(f"../datasets/results/{extension}/{time_horizon}_{attack_window}.csv", outcomes, delimiter=',')
+                np.savetxt(f"../datasets/results/{extension}/{time_horizon}_{attack_window}_{run}.csv", outcomes, delimiter=',')
 
     for (th_ndx, time_horizon) in enumerate(time_horizons):
         np.savetxt(f"../datasets/results/{extension}/{time_horizon}.csv", th_results[th_ndx], delimiter=',')

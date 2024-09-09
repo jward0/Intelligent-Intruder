@@ -9,11 +9,11 @@ RUN mkdir -p /home/intelligent_intruder
 RUN mkdir -p /home/intelligent_intruder/datasets
 WORKDIR /home/intelligent_intruder/
 
-COPY Intelligent-Intruder/requirements.txt /home/intelligent_intruder/
+COPY requirements_2.txt /home/intelligent_intruder/
 RUN pip install --no-cache-dir -r requirements_2.txt
 
-COPY Intelligent-Intruder/main.py /home/intelligent_intruder/
-COPY Intelligent-Intruder/machine_learning.py /home/intelligent_intruder/
-COPY Intelligent-Intruder/run_main.sh /home/intelligent_intruder/
+COPY main.py /home/intelligent_intruder/
+COPY machine_learning.py /home/intelligent_intruder/
+COPY run_main.sh /home/intelligent_intruder/
 
 CMD ["bash"]
