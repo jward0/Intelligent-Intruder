@@ -220,26 +220,26 @@ if __name__ == '__main__':
         "-b", "--batch_size",
         nargs="*",
         type=int,
-        default=[],
+        default=4,
     )
 
     args.add_argument(
         "-p", "--pos_weight",
         nargs="*",
         type=float,
-        default=[],
+        default=0.25,
     )
     args.add_argument(
         "-l", "--l1_magnitude",
         nargs="*",
         type=float,
-        default=[],
+        default=0.1,
     )
     args.add_argument(
         "-hs", "--hidden_size",
         nargs="*",
         type=int,
-        default=[],
+        default=6,
     )
 
     a = args.parse_args()
